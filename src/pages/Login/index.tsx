@@ -1,0 +1,63 @@
+import React from 'react';
+import type { FormProps } from 'antd';
+import { Button, Col, Form, Input, Row } from 'antd';
+import "./login.scss";
+
+type FieldType = {
+    email?: string;
+    password?: string;
+};
+
+const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
+    console.log('Success:', values);
+};
+
+const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+};
+
+const Login: React.FC = () => (
+    <Row>
+        <Col xs={2} sm={4} md={7} lg={7} xl={7}>
+        </Col>
+        <Col xs={20} sm={16} md={10} lg={10} xl={10}>
+            <Form
+                name="basic"
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+                className='login-form'
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
+                autoComplete="off"
+            >
+                <p className='login-form__title'>Đăng nhập</p>
+                <Form.Item<FieldType>
+                    label="Email"
+                    name="email"
+                    rules={[{ required: true, message: 'Email không được để trống!' }]}
+                >
+                    <Input placeholder="Nhập email" />
+                </Form.Item>
+
+                <Form.Item<FieldType>
+                    label="Mật khẩu"
+                    name="password"
+                    rules={[{ required: true, message: 'Mật khẩu không được để trống!' }]}
+                >
+                    <Input.Password placeholder="Nhập mật khẩu" />
+                </Form.Item>
+
+                {/* <Link href="#">Quên mật khẩu?</Link>
+                <a href="#">Đăng ký</a> */}
+
+                <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
+                    <Button type="primary" htmlType="submit" block>
+                        Đăng nhập
+                    </Button>
+                </Form.Item>
+            </Form>
+        </Col>
+    </Row>
+);
+
+export default Login;

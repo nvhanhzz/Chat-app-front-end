@@ -1,7 +1,9 @@
+import AllRoutes from "./components/AllRoutes";
+
 function App() {
   return (
     <>
-      Chat app
+      <AllRoutes />
     </>
   )
 }
