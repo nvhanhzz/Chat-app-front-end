@@ -1,12 +1,10 @@
 import React from 'react';
 import type { FormProps } from 'antd';
 import { Button, Col, Form, Input, Row } from 'antd';
-import "./login.scss";
-import { Link } from 'react-router-dom';
+import "./forgotPassword.scss";
 
 type FieldType = {
     email?: string;
-    password?: string;
 };
 
 const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
@@ -17,7 +15,7 @@ const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
     console.log('Failed:', errorInfo);
 };
 
-const Login: React.FC = () => (
+const ForgotPassword: React.FC = () => (
     <Row>
         <Col xs={2} sm={4} md={7} lg={7} xl={7}>
         </Col>
@@ -26,12 +24,12 @@ const Login: React.FC = () => (
                 name="basic"
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
-                className='login-form'
+                className='forgot-password-form'
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
             >
-                <p className='login-form__title'>Đăng nhập</p>
+                <p className='forgot-password-form__title'>Quên mật khẩu</p>
                 <Form.Item<FieldType>
                     label="Email"
                     name="email"
@@ -40,22 +38,9 @@ const Login: React.FC = () => (
                     <Input placeholder="Nhập email" />
                 </Form.Item>
 
-                <Form.Item<FieldType>
-                    label="Mật khẩu"
-                    name="password"
-                    rules={[{ required: true, message: 'Mật khẩu không được để trống!' }]}
-                >
-                    <Input.Password placeholder="Nhập mật khẩu" />
-                </Form.Item>
-
-                <div className='login-form__other-featured'>
-                    <Link to='/forgot-password'>Quên mật khẩu?</Link>
-                    <Link to='/register'>Đăng ký</Link>
-                </div>
-
                 <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
                     <Button type="primary" htmlType="submit" block>
-                        Đăng nhập
+                        Nhận mã OTP
                     </Button>
                 </Form.Item>
             </Form>
@@ -63,4 +48,4 @@ const Login: React.FC = () => (
     </Row>
 );
 
-export default Login;
+export default ForgotPassword;
