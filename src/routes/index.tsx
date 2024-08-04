@@ -1,20 +1,52 @@
-// import { useSelector } from "react-redux";
-// import { Navigate } from "react-router-dom";
-import LoginPage from "../pages/Login";
-import ForgotPassword from "../pages/ForgotPassword";
-import Register from "../pages/Register";
+import React from 'react';
+import AuthLayout from '../layouts/AuthLayout';
+import LayoutDefault from '../layouts/LayoutDefault';
+import LoginPage from '../pages/Login';
+import ForgotPassword from '../pages/ForgotPassword';
+import Register from '../pages/Register';
+import Test from '../pages/Test';
+import PrivateRoute from '../components/common/PrivateRoute';
+import { useAuthRoutes } from './useAuthRoutes';
 
-export const routes = [
+interface RouteType {
+    path: string;
+    element: React.ReactElement;
+    children?: RouteType[];
+}
+
+const AuthRoutes: RouteType[] = [
     {
         path: '/',
-        element: <LoginPage />
+        element: <LoginPage />,
     },
     {
         path: '/forgot-password',
-        element: <ForgotPassword />
+        element: <ForgotPassword />,
     },
     {
         path: '/register',
-        element: <Register />
-    }
+        element: <Register />,
+    },
 ];
+
+const DefaultRoutes: RouteType[] = [
+    {
+        path: '/test',
+        element: <PrivateRoute element={Test} />,
+    },
+    // Các routes khác yêu cầu đăng nhập
+];
+
+export const routes = () => {
+    const isLoggedIn = useAuthRoutes();
+
+    return [
+        {
+            path: '/',
+            element: isLoggedIn ? <LayoutDefault /> : <AuthLayout />,
+            children: isLoggedIn
+                ? DefaultRoutes
+                : AuthRoutes,
+        },
+    ];
+};

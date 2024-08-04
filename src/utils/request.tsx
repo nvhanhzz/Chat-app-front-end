@@ -1,10 +1,9 @@
-import dotenv from "dotenv";
-dotenv.config();
-const DOMAIN: string = process.env.DOMAIN as string;
+const DOMAIN: string = import.meta.env.VITE_DOMAIN as string;
+const PREFIX_API: string = import.meta.env.VITE_PREFIX_API as string;
 
 export const get = async (path: string): Promise<Response> => {
     try {
-        const response = await fetch(DOMAIN + path, {
+        const response = await fetch(DOMAIN + PREFIX_API + path, {
             method: 'GET',
             credentials: 'include'
         });
@@ -15,19 +14,15 @@ export const get = async (path: string): Promise<Response> => {
     }
 };
 
-export const post = async (path: string, option: Record<string, any>): Promise<Response> => {
-    const formData = new FormData();
-    for (const key in option) {
-        if (option.hasOwnProperty(key)) {
-            formData.append(key, option[key]);
-        }
-    }
-
+export const postJson = async (path: string, data: Record<string, any>): Promise<Response> => {
     try {
-        const response = await fetch(DOMAIN + path, {
+        const response = await fetch(DOMAIN + PREFIX_API + path, {
             method: 'POST',
             credentials: 'include',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
         });
         return response;
     } catch (error) {
@@ -36,19 +31,57 @@ export const post = async (path: string, option: Record<string, any>): Promise<R
     }
 };
 
-export const patch = async (path: string, option: Record<string, any>): Promise<Response> => {
+export const postFormData = async (path: string, data: Record<string, any>): Promise<Response> => {
     const formData = new FormData();
-    for (const key in option) {
-        if (option.hasOwnProperty(key)) {
-            formData.append(key, option[key]);
+    for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+            formData.append(key, data[key]);
         }
     }
 
     try {
-        const response = await fetch(DOMAIN + path, {
+        const response = await fetch(DOMAIN + PREFIX_API + path, {
+            method: 'POST',
+            credentials: 'include',
+            body: formData,
+        });
+        return response;
+    } catch (error) {
+        console.error('Fetch error:', error);
+        throw error;
+    }
+};
+
+export const patchJson = async (path: string, data: Record<string, any>): Promise<Response> => {
+    try {
+        const response = await fetch(DOMAIN + PREFIX_API + path, {
             method: 'PATCH',
             credentials: 'include',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        return response;
+    } catch (error) {
+        console.error('Fetch error:', error);
+        throw error;
+    }
+};
+
+export const patchFormData = async (path: string, data: Record<string, any>): Promise<Response> => {
+    const formData = new FormData();
+    for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+            formData.append(key, data[key]);
+        }
+    }
+
+    try {
+        const response = await fetch(DOMAIN + PREFIX_API + path, {
+            method: 'PATCH',
+            credentials: 'include',
+            body: formData,
         });
         return response;
     } catch (error) {
@@ -59,7 +92,7 @@ export const patch = async (path: string, option: Record<string, any>): Promise<
 
 export const del = async (path: string): Promise<Response> => {
     try {
-        const response = await fetch(DOMAIN + path, {
+        const response = await fetch(DOMAIN + PREFIX_API + path, {
             method: 'DELETE',
             credentials: 'include'
         });
