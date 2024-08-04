@@ -10,7 +10,6 @@ export const useAuthRoutes = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(isLoggedInFromStore);
 
     useEffect(() => {
-        console.log("qua");
         const checkLoggedIn = async () => {
             const response = await getCheckLoggedIn();
             if (response.status === 200) {

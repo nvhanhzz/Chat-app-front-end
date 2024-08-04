@@ -2,7 +2,11 @@ import React from 'react';
 import type { FormProps } from 'antd';
 import { Button, Col, Form, Input, Row } from 'antd';
 import "./login.scss";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { postLogin } from '../../services/AuthService';
+import { useDispatch } from 'react-redux';
+import { addNotification } from '../../redux/actions/notificationAction';
+import { login } from '../../redux/actions/auth';
 
 type FieldType = {
     email?: string;
@@ -10,8 +14,24 @@ type FieldType = {
 };
 
 const Login: React.FC = () => {
-    const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-        console.log('Success:', values);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+        try {
+            const response = await postLogin(values);
+            const responseContent = await response.json();
+
+            if (response.status === 200) {
+                dispatch(addNotification('Thông báo', responseContent.message, 5));
+                dispatch(login());
+                navigate("/");
+            } else {
+                dispatch(addNotification('Thông báo', responseContent.message, 5));
+            }
+        } catch (error) {
+            console.error('Error during registration:', error);
+        }
     };
 
     const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
