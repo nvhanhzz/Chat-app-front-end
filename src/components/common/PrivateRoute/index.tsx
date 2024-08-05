@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
-import { RootState } from '../../redux/store';
+import { RootState } from '../../../redux/store';
 
 interface PrivateRouteProps {
     element: React.ComponentType;

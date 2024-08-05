@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { notification } from 'antd';
-import { RootState } from '../../redux/store';
-import { removeNotification } from '../../redux/actions/notificationAction';
+import { RootState } from '../../../redux/store';
+import { removeNotification } from '../../../redux/actions/notificationAction';
 
 const NotificationContainer: React.FC = () => {
     const dispatch = useDispatch();

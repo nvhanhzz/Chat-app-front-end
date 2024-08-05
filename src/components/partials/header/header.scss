@@ -1,0 +1,25 @@
+.header {
+    background: #fff;
+    height: 70px;
+    border-bottom: 1px solid #edf2f9;
+    position: fixed;
+    top: 0;
+    width: calc(100% - 80px);
+    padding: 0 40px;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+
+    &__left-child, &__right-child {
+        display: flex;
+        align-items: center;
+    }
+
+    &__left-child * {
+        margin-right: 12px;
+    }
+
+    &__right-child * {
+        margin-left: 12px;
+    }
+}

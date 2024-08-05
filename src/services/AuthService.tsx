@@ -30,3 +30,13 @@ export const postLogin = async (option: Record<string, any>): Promise<Response> 
         throw error;
     }
 };
+
+export const postLogout = async (option: Record<string, any>): Promise<Response> => {
+    try {
+        const result = await postJson(`${PREFIX_AUTH}/logout`, option);
+        return result;
+    } catch (error) {
+        console.error('Error during registration:', error);
+        throw error;
+    }
+};

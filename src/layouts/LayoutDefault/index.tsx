@@ -1,11 +1,12 @@
 import { Outlet } from "react-router-dom";
 import NotificationContainer from "../../components/common/NotificationContainer";
+import Header from "../../components/partials/header";
 
 function LayoutDefault() {
     return (
         <>
             <NotificationContainer />
-            <h1>Layout default</h1>
+            <Header />
             <Outlet />
         </>
     );
