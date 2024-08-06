@@ -1,28 +1,75 @@
 .search-header {
     margin-left: 15px;
+    position: relative;
 
     .anticon {
-        margin-right: 5px;
-        
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+
         svg {
             font-size: 15px;
-            opacity: 0.3;
+            opacity: 0.4;
         }
     }
 
     form {
-        display: inline;
+        display: inline-block;
 
         input {
             border: none;
+            margin-left: 25px; 
+            padding: 5px 10px; 
+            font-size: 16px;
 
             &:focus {
                 outline: none;
             }
 
             &::placeholder {
-                opacity: 0.3;
+                opacity: 0.4;
             }
+        }
+    }
+
+    @media (max-width: 1200px) {
+        form {
+            width: 80%;
+        }
+
+        input {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 992px) {
+        form {
+            width: 70%; 
+        }
+
+        input {
+            width: 100%; 
+        }
+    }
+
+    @media (max-width: 768px) {
+        form {
+            width: 60%; 
+        }
+
+        input {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        form {
+            width: 60%;
+        }
+
+        input {
+            width: 100%;
         }
     }
 }

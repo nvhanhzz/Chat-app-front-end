@@ -1,0 +1,31 @@
+.messages {
+    display: flex;
+    background-color: #fff;
+    height: calc(100vh - 70px - 50px - 2px);
+    border: 1px solid #edf2f9;
+
+    &__threads {
+        width: 350px;
+        border-right: 1px solid #edf2f9;
+
+        &--list {
+            height: calc(100% - 75px);
+            overflow-y: auto;
+        }
+
+        @media (max-width: 767px) {
+            width: 100%;
+            display: none;
+        }
+    }
+
+    &__content {
+        width: calc(100% - 350px);
+        position: relative;
+
+        @media (max-width: 767px) {
+            width: 100%;
+            // display: none;
+        }
+    }
+}

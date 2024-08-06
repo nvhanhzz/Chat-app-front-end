@@ -30,6 +30,10 @@ const AuthRoutes: RouteType[] = [
         path: '/register',
         element: <Register />,
     },
+    {
+        path: '*',
+        element: <LoginPage />,
+    },
 ];
 
 const DefaultRoutes: RouteType[] = [
