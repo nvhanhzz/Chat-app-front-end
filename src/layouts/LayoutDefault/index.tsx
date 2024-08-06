@@ -1,13 +1,24 @@
 import { Outlet } from "react-router-dom";
 import NotificationContainer from "../../components/common/NotificationContainer";
 import Header from "../../components/partials/header";
+import SiderComponent from "../../components/partials/sider";
+import "./layout-default.scss";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 function LayoutDefault() {
+    const isFolded = useSelector((state: RootState) => state.fold.isFolded);
+
     return (
         <>
             <NotificationContainer />
             <Header />
-            <Outlet />
+            <main className="main">
+                <SiderComponent />
+                <div className={`main__outlet ${isFolded ? 'main__outlet-folded' : ''}`}>
+                    <Outlet />
+                </div>
+            </main>
         </>
     );
 }

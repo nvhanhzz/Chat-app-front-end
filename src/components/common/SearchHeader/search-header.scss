@@ -1,4 +1,28 @@
-.search {
-    font-size: 18px;
-    color: #53535f;
+.search-header {
+    margin-left: 15px;
+
+    .anticon {
+        margin-right: 5px;
+        
+        svg {
+            font-size: 15px;
+            opacity: 0.3;
+        }
+    }
+
+    form {
+        display: inline;
+
+        input {
+            border: none;
+
+            &:focus {
+                outline: none;
+            }
+
+            &::placeholder {
+                opacity: 0.3;
+            }
+        }
+    }
 }

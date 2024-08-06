@@ -1,0 +1,29 @@
+.logo {
+    margin-left: 0;
+    height: 70px;
+    width: calc(100% / 7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #edf2f9;
+    transition: width 0.3s ease;
+
+    img {
+        height: 65px;
+        width: auto;
+        transition: height 0.3s ease;
+    }
+
+    @media (max-width: 992px) {
+        width: 0;
+        overflow: hidden
+    }
+}
+
+.fold-logo {
+    width: 80px;
+
+    img {
+        height: 40px;
+    }
+}

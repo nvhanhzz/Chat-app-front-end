@@ -4,22 +4,46 @@
     border-bottom: 1px solid #edf2f9;
     position: fixed;
     top: 0;
-    width: calc(100% - 80px);
-    padding: 0 40px;
+    width: 100%;
     z-index: 1000;
     display: flex;
     justify-content: space-between;
 
-    &__left-child, &__right-child {
+    &__child {
+        width: calc(6 / 7 * 100%);
         display: flex;
-        align-items: center;
+        justify-content: space-between;
+
+        &--left, &--right {
+            display: flex;
+            align-items: center;
+    
+            .anticon {
+                font-size: 18px !important;
+            }
+        }
+
+        &--left { 
+            > * {
+                margin-left: 10px;
+            }
+        }
+
+        &--right {
+            margin-right: 30px;
+        
+            > * {
+                margin-left: 10px;
+            }
+        } 
+
+        @media (max-width: 992px) {
+            width: 100%;
+            overflow: hidden
+        }
     }
 
-    &__left-child * {
-        margin-right: 12px;
-    }
-
-    &__right-child * {
-        margin-left: 12px;
+    &__child-folded {
+        width: calc(100% - 80px);
     }
 }

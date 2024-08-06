@@ -1,0 +1,27 @@
+.ant-layout-sider {
+    max-width: none !important;
+    min-width: 0 !important;
+    width: calc(100% / 7) !important;
+    transition: width 0.3s ease;
+    flex: none !important;
+
+    .ant-menu {
+        min-height: calc(100vh - 70px);
+        border-right: 1px solid #edf2f9;
+        transition: width 0.3s ease;
+    }
+
+    @media (max-width: 992px) {
+        width: 0 !important;
+        overflow: hidden;
+    }
+
+    .ant-menu-inline-collapsed {
+        width: 80px !important;
+        position: absolute;
+    }
+
+    .ant-menu-item {
+        padding-left: 25%;
+    }
+}

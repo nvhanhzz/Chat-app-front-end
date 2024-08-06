@@ -1,12 +1,13 @@
 import React from 'react';
 import { BellOutlined } from '@ant-design/icons';
-import "./notification-header.scss";
+import { Button } from 'antd';
 
 const NotificationHeader: React.FC = () => {
     return (
-        <div className='notification-list'>
-            <BellOutlined />
-        </div>
+        <Button className='notification-list'
+            type='text'
+            icon={<BellOutlined />}
+        />
     );
 }
 

@@ -7,6 +7,9 @@ import Register from '../pages/Register';
 import Test from '../pages/Test';
 import PrivateRoute from '../components/common/PrivateRoute';
 import { useAuthRoutes } from './useAuthRoutes';
+import Home from '../pages/Home';
+import Friend from '../pages/Friend';
+import Messages from '../pages/Messages';
 
 interface RouteType {
     path: string;
@@ -34,7 +37,18 @@ const DefaultRoutes: RouteType[] = [
         path: '/test',
         element: <PrivateRoute element={Test} />,
     },
-    // Các routes khác yêu cầu đăng nhập
+    {
+        path: '/',
+        element: <PrivateRoute element={Home} />,
+    },
+    {
+        path: '/friends',
+        element: <PrivateRoute element={Friend} />,
+    },
+    {
+        path: '/messages',
+        element: <PrivateRoute element={Messages} />,
+    }
 ];
 
 export const routes = () => {
