@@ -26,4 +26,9 @@
     img {
         height: 40px;
     }
+
+    @media (max-width: 992px) {
+        width: 0;
+        overflow: hidden
+    }
 }

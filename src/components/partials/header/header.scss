@@ -45,5 +45,10 @@
 
     &__child-folded {
         width: calc(100% - 80px);
+
+        @media (max-width: 992px) {
+            width: 100%;
+            overflow: hidden
+        }
     }
 }

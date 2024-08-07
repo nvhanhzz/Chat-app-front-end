@@ -10,22 +10,34 @@ const FoldSiderButton: React.FC = () => {
     const isFolded = useSelector((state: RootState) => state.fold.isFolded);
 
     const foldClicked = () => {
-        if (isFolded) {
-            dispatch(unfold());
-        } else {
-            dispatch(fold());
-        }
+        dispatch(fold());
     }
 
-    return (
-        <div className="fold-sider-button">
-            <Button
-                type="text"
-                icon={isFolded ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                onClick={foldClicked}
-            />
-        </div>
-    );
+    const unFoldClicked = () => {
+        dispatch(unfold());
+    }
+
+    if (isFolded) {
+        return (
+            <div className="fold-sider-button">
+                <Button
+                    type="text"
+                    icon={<MenuUnfoldOutlined />}
+                    onClick={unFoldClicked}
+                />
+            </div>
+        );
+    } else {
+        return (
+            <div className="fold-sider-button">
+                <Button
+                    type="text"
+                    icon={<MenuFoldOutlined />}
+                    onClick={foldClicked}
+                />
+            </div>
+        );
+    }
 }
 
 export default FoldSiderButton;
