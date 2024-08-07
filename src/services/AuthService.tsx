@@ -6,7 +6,17 @@ export const getCheckLoggedIn = async (): Promise<Response> => {
         const result = await get(`${PREFIX_AUTH}/checkLoggedIn`);
         return result;
     } catch (error) {
-        console.error('Error during registration:', error);
+        console.error(error);
+        throw error;
+    }
+};
+
+export const getCurrentUser = async (): Promise<Response> => {
+    try {
+        const result = await get(`${PREFIX_AUTH}/currentUser`);
+        return result;
+    } catch (error) {
+        console.error(error);
         throw error;
     }
 };
@@ -16,7 +26,7 @@ export const postRegister = async (option: Record<string, any>): Promise<Respons
         const result = await postJson(`${PREFIX_AUTH}/register`, option);
         return result;
     } catch (error) {
-        console.error('Error during registration:', error);
+        console.error(error);
         throw error;
     }
 };
@@ -26,7 +36,7 @@ export const postLogin = async (option: Record<string, any>): Promise<Response> 
         const result = await postJson(`${PREFIX_AUTH}/login`, option);
         return result;
     } catch (error) {
-        console.error('Error during registration:', error);
+        console.error(error);
         throw error;
     }
 };
@@ -36,7 +46,7 @@ export const postLogout = async (option: Record<string, any>): Promise<Response>
         const result = await postJson(`${PREFIX_AUTH}/logout`, option);
         return result;
     } catch (error) {
-        console.error('Error during registration:', error);
+        console.error(error);
         throw error;
     }
 };

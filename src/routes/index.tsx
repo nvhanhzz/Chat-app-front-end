@@ -6,7 +6,7 @@ import ForgotPassword from '../pages/ForgotPassword';
 import Register from '../pages/Register';
 import Test from '../pages/Test';
 import PrivateRoute from '../components/common/PrivateRoute';
-import { useAuthRoutes } from './useAuthRoutes';
+import { useAuthRoutes } from './useRoutes';
 import Home from '../pages/Home';
 import Friend from '../pages/Friend';
 import Messages from '../pages/Messages';
