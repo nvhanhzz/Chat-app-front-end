@@ -16,8 +16,6 @@ const SiderComponent: React.FC = () => {
     const isFolded = useSelector((state: RootState) => state.fold.isFolded);
     const navigate = useNavigate();
 
-    console.log(isFolded);
-
     const handleMenuClick = (e: any) => {
         const { key } = e;
         switch (key) {

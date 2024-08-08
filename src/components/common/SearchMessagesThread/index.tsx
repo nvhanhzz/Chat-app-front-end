@@ -7,7 +7,6 @@ const SearchMessagesThread: React.FC = () => {
 
     const handleChangeKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
         setKeyword(e.target.value);
-        // do any things (suggest)
     }
 
     return (

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { SmileOutlined, PictureOutlined, LikeFilled, SendOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import "./messages-input.scss";
+import socket from '../../../socket';
 
 const MessagesInput: React.FC = () => {
     const [content, setContent] = useState('');
@@ -14,6 +15,10 @@ const MessagesInput: React.FC = () => {
         } else {
             setTypeSend(false);
         }
+    }
+
+    const handleSend = async () => {
+        socket.emit("SEND_MESSAGE", content);
     }
 
     return (
@@ -32,6 +37,7 @@ const MessagesInput: React.FC = () => {
                     className='messages-input__button-list--send'
                     type='text'
                     icon={typeSend ? <SendOutlined /> : <LikeFilled />}
+                    onClick={handleSend}
                 />
             </div>
         </div>

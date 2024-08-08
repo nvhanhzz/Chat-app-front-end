@@ -5,7 +5,7 @@ export interface foldState {
 }
 
 const initialState: foldState = {
-    isFolded: false,
+    isFolded: true,
 };
 
 const FoldReducer = (state = initialState, action: any): foldState => {
