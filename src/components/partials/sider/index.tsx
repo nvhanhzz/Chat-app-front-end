@@ -7,7 +7,7 @@ import {
 import { Layout, Menu } from 'antd';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import "./sider.scss";
 
 const { Sider } = Layout;
@@ -15,6 +15,17 @@ const { Sider } = Layout;
 const SiderComponent: React.FC = () => {
     const isFolded = useSelector((state: RootState) => state.fold.isFolded);
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const getSelectedKey = () => {
+        const path = location.pathname;
+
+        if (path.startsWith('/friends')) return '2';
+        if (path.startsWith('/messages')) return '3';
+        if (path.startsWith('/')) return '1';
+
+        return '1';
+    };
 
     const handleMenuClick = (e: any) => {
         const { key } = e;
@@ -37,7 +48,7 @@ const SiderComponent: React.FC = () => {
         <Sider trigger={null} collapsible collapsed={isFolded} className='sider'>
             <div className="demo-logo-vertical" />
             <Menu
-                defaultSelectedKeys={['1']}
+                selectedKeys={[getSelectedKey()]}
                 onClick={handleMenuClick}
                 items={[
                     {

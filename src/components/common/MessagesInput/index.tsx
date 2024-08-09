@@ -4,6 +4,10 @@ import { Button } from 'antd';
 import "./messages-input.scss";
 import getSocket from '../../../utils/socket';
 
+interface Message {
+    content: string
+}
+
 const MessagesInput: React.FC = () => {
     const [content, setContent] = useState('');
     const [typeSend, setTypeSend] = useState(false);
@@ -19,7 +23,15 @@ const MessagesInput: React.FC = () => {
 
     const handleSend = async () => {
         const socket = getSocket();
-        socket.emit("SEND_MESSAGE", content);
+        const data: Message = {
+            content: content
+        }
+        socket.emit("SEND_MESSAGE", data);
+
+        socket.once("SOCKET_EMIT_MESSAGE", (data) => {
+            data = data;
+            setContent("");
+        });
     }
 
     return (
