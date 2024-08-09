@@ -3,19 +3,22 @@ import notificationReducer, { NotificationState } from './reducers/notificationR
 import AuthReducer, { authState } from './reducers/auth';
 import FoldReducer, { foldState } from './reducers/foldSider';
 import CurrentUserReducer, { currentUserState } from './reducers/currentUser';
+import SocketReducer, { socketState } from './reducers/socket';
 
 export interface RootState {
     notification: NotificationState;
     auth: authState;
     fold: foldState;
-    currentUser: currentUserState
+    currentUser: currentUserState;
+    socket: socketState
 }
 
 const rootReducer = combineReducers({
     notification: notificationReducer,
     auth: AuthReducer,
     fold: FoldReducer,
-    currentUser: CurrentUserReducer
+    currentUser: CurrentUserReducer,
+    socket: SocketReducer
 });
 
 const store = createStore(rootReducer);

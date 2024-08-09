@@ -14,13 +14,20 @@ import { useNavigate } from 'react-router-dom';
 import { addNotification } from '../../../redux/actions/notificationAction';
 import { logout } from '../../../redux/actions/auth';
 import { RootState } from '../../../redux/store';
-import { User } from '../../../redux/actions/currentUser';
+import { setCurrentUser, User } from '../../../redux/actions/currentUser';
+import getSocket from '../../../utils/socket';
+import { closeSocket } from '../../../redux/actions/socket';
 
 const InformationHeader: React.FC = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const currentUser: User = useSelector((state: RootState) => state.currentUser.user);
+    const currentUserState = useSelector((state: RootState) => state.currentUser);
+    if (!currentUserState || !currentUserState.user) {
+        return <div>Loading...</div>;
+    }
+
+    const currentUser: User = currentUserState.user;
 
     const clickLogout = async () => {
         const response = await postLogout({});
@@ -29,6 +36,11 @@ const InformationHeader: React.FC = () => {
         if (response.status === 200) {
             dispatch(addNotification('Thông báo', responseContent.message, 5));
             dispatch(logout());
+            dispatch(setCurrentUser(null));
+
+            const socket = getSocket();
+            socket.emit("LOGOUT");
+            dispatch(closeSocket());
             navigate("/");
         } else {
             dispatch(addNotification('Thông báo', responseContent.message, 5));

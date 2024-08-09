@@ -10,7 +10,7 @@ export interface User {
     phone: string
 }
 
-export const setCurrentUser = (user: User) => ({
+export const setCurrentUser = (user: User | null) => ({
     type: SET_CURRENT_USER,
     user: user
 });

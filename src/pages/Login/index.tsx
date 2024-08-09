@@ -7,6 +7,7 @@ import { postLogin } from '../../services/AuthService';
 import { useDispatch } from 'react-redux';
 import { addNotification } from '../../redux/actions/notificationAction';
 import { login } from '../../redux/actions/auth';
+import { setCurrentUser } from '../../redux/actions/currentUser';
 
 type FieldType = {
     email?: string;
@@ -20,14 +21,15 @@ const Login: React.FC = () => {
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         try {
             const response = await postLogin(values);
-            const responseContent = await response.json();
+            const result = await response.json();
 
             if (response.status === 200) {
-                dispatch(addNotification('Thông báo', responseContent.message, 5));
+                dispatch(addNotification('Thông báo', result.message, 5));
                 dispatch(login());
+                dispatch(setCurrentUser(result.user));
                 navigate("/");
             } else {
-                dispatch(addNotification('Thông báo', responseContent.message, 5));
+                dispatch(addNotification('Thông báo', result.message, 5));
             }
         } catch (error) {
             console.error('Error during registration:', error);

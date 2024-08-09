@@ -4,18 +4,9 @@ export interface currentUserState {
     user: User
 }
 
-const initialState: currentUserState = {
-    user: {
-        avatar: "",
-        fullName: "",
-        coverImage: "",
-        description: "",
-        email: "",
-        phone: ""
-    }
-};
+const initialState: currentUserState | null = null;
 
-const CurrentUserReducer = (state = initialState, action: any): currentUserState => {
+const CurrentUserReducer = (state = initialState, action: any): currentUserState | null => {
     switch (action.type) {
         case SET_CURRENT_USER:
             return {

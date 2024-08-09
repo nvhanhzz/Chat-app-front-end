@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SmileOutlined, PictureOutlined, LikeFilled, SendOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import "./messages-input.scss";
-import socket from '../../../socket';
+import getSocket from '../../../utils/socket';
 
 const MessagesInput: React.FC = () => {
     const [content, setContent] = useState('');
@@ -18,6 +18,7 @@ const MessagesInput: React.FC = () => {
     }
 
     const handleSend = async () => {
+        const socket = getSocket();
         socket.emit("SEND_MESSAGE", content);
     }
 
