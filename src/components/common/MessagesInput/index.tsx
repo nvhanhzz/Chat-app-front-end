@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { SmileOutlined, PictureOutlined, LikeFilled, SendOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
+import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 import "./messages-input.scss";
 import getSocket from '../../../utils/socket';
 
@@ -11,6 +12,15 @@ interface Message {
 const MessagesInput: React.FC = () => {
     const [content, setContent] = useState('');
     const [typeSend, setTypeSend] = useState(false);
+    const [emojiVisible, setEmojiVisible] = useState(false);
+
+    const handleEmojiClick = (emojiObject: EmojiClickData) => {
+        setContent(prevContent => prevContent + emojiObject.emoji);
+        if (!typeSend) {
+            setTypeSend(true);
+        }
+        setEmojiVisible(false);
+    };
 
     const handleChangeContent = (e: React.ChangeEvent<HTMLInputElement>) => {
         setContent(e.target.value);
@@ -41,6 +51,7 @@ const MessagesInput: React.FC = () => {
                 <Button
                     type='text'
                     icon={<SmileOutlined />}
+                    onClick={() => setEmojiVisible(!emojiVisible)}
                 />
                 <Button
                     type='text'
@@ -53,6 +64,11 @@ const MessagesInput: React.FC = () => {
                     onClick={handleSend}
                 />
             </div>
+            {emojiVisible && (
+                <div className='emoji-picker'>
+                    <EmojiPicker onEmojiClick={handleEmojiClick} />
+                </div>
+            )}
         </div>
     );
 }

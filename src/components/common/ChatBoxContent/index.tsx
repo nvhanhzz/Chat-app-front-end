@@ -86,9 +86,7 @@ const ChatBoxContent: React.FC = () => {
 
     const currentUser: User = currentUserState.user;
 
-    // Tạo danh sách các tin nhắn với avatar chỉ hiển thị cho tin nhắn cuối cùng từ cùng một người gửi liên tiếp
     const chatsWithAvatars = chats.map((chat, index) => {
-        // Kiểm tra xem tin nhắn hiện tại có phải là tin nhắn cuối cùng của người gửi liên tiếp không
         const isLastMessageFromUser = index === chats.length - 1 || chats[index + 1].userId._id !== chat.userId._id;
         return {
             ...chat,
