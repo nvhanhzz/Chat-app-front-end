@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
-import { Image, Upload } from 'antd';
+import { PictureOutlined } from '@ant-design/icons';
+import { Button, Image, Upload } from 'antd';
 import type { GetProp, UploadFile, UploadProps } from 'antd';
+import "./upload-image.scss";
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -13,7 +14,11 @@ const getBase64 = (file: FileType): Promise<string> =>
         reader.onerror = (error) => reject(error);
     });
 
-const Test: React.FC = () => {
+interface UploadImageProps {
+    onFileListChange: (fileList: UploadFile[]) => void;
+}
+
+const UploadImage: React.FC<UploadImageProps> = ({ onFileListChange }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -27,30 +32,33 @@ const Test: React.FC = () => {
         setPreviewOpen(true);
     };
 
-    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
+    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
         setFileList(newFileList);
+        onFileListChange(newFileList); // Gửi fileList về component cha
+    };
 
     const uploadButton = (
-        <button style={{ border: 0, background: 'none' }} type="button">
-            <PlusOutlined />
-            <div style={{ marginTop: 8 }}>Upload</div>
-        </button>
+        <Button
+            type='text'
+            icon={<PictureOutlined />}
+            className="upload-button"
+        />
     );
     return (
         <>
             <Upload
                 action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                listType="picture-circle"
+                className="custom-upload"
+                listType="picture"
                 fileList={fileList}
                 onPreview={handlePreview}
                 onChange={handleChange}
             >
-                {/* {fileList.length >= 8 ? null : uploadButton} */}
                 {uploadButton}
             </Upload>
             {previewImage && (
                 <Image
-                    wrapperStyle={{ display: 'none' }}
+                    className="hidden-image"
                     preview={{
                         visible: previewOpen,
                         onVisibleChange: (visible) => setPreviewOpen(visible),
@@ -63,4 +71,4 @@ const Test: React.FC = () => {
     );
 };
 
-export default Test;
+export default UploadImage;

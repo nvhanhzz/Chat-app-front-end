@@ -1,0 +1,72 @@
+.custom-upload {
+    .ant-upload-list {
+        position: absolute;
+        bottom: 75px;
+        left: 10px;
+        display: flex;
+        flex-direction: row; 
+        align-items: flex-end;
+        margin: 0;
+        padding: 0;
+        background-color: transparent;
+        border-radius: 0;
+        border: none;
+
+        .ant-upload-list-item {
+            padding: 0px !important;
+            border: 0px !important;
+
+            .ant-tooltip-inner {
+                display: none !important;
+            }
+            
+            .ant-upload-list-item-thumbnail {
+                border-radius: 12px !important;
+            }
+
+            button .anticon svg {
+                font-size: 14px;
+                color: #e0d9d9;
+                background-color: #2c2929;
+                border-radius: 50%;
+            }   
+        }
+    }
+
+    .ant-upload-list-item-name {
+        display: none;
+    }
+
+    .ant-upload-list-item-actions {
+        position: absolute;
+        top: 4px;
+        right: 4px; 
+        color: #fff; 
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .upload-button {
+        border-radius: 4px;
+        &:hover {
+            background-color: #e6e6e6;
+        }
+    }
+
+    ant-upload-list-item.ant-tooltip-open {
+        pointer-events: none;
+    }
+
+    .ant-tooltip {
+        display: none;
+    }
+}
+
+.hidden-image {
+    display: none;
+}
