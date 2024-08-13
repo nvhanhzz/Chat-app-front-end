@@ -1,40 +1,38 @@
 import React, { useState } from 'react';
 import { PictureOutlined } from '@ant-design/icons';
 import { Button, Image, Upload } from 'antd';
-import type { GetProp, UploadFile, UploadProps } from 'antd';
+import type { UploadFile, UploadProps } from 'antd';
 import "./upload-image.scss";
 
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+type FileType = UploadFile;
+
+interface UploadImageProps {
+    onFileListChange: (fileList: UploadFile[]) => void;
+    fileList: UploadFile[];
+}
 
 const getBase64 = (file: FileType): Promise<string> =>
     new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file.originFileObj as File);
         reader.onload = () => resolve(reader.result as string);
         reader.onerror = (error) => reject(error);
     });
 
-interface UploadImageProps {
-    onFileListChange: (fileList: UploadFile[]) => void;
-}
-
-const UploadImage: React.FC<UploadImageProps> = ({ onFileListChange }) => {
+const UploadImage: React.FC<UploadImageProps> = ({ onFileListChange, fileList }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
 
     const handlePreview = async (file: UploadFile) => {
         if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj as FileType);
+            file.preview = await getBase64(file);
         }
-
         setPreviewImage(file.url || (file.preview as string));
         setPreviewOpen(true);
     };
 
     const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
-        setFileList(newFileList);
-        onFileListChange(newFileList); // Gửi fileList về component cha
+        onFileListChange(newFileList);
     };
 
     const uploadButton = (
@@ -44,6 +42,7 @@ const UploadImage: React.FC<UploadImageProps> = ({ onFileListChange }) => {
             className="upload-button"
         />
     );
+
     return (
         <>
             <Upload

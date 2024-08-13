@@ -16,7 +16,7 @@ const MessagesInput: React.FC = () => {
     const [content, setContent] = useState('');
     const [typeSend, setTypeSend] = useState(false);
     const [emojiVisible, setEmojiVisible] = useState(false);
-    let fileList: UploadFile[] = []; // Không cần useState
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
 
     const handleEmojiClick = (emojiObject: EmojiClickData) => {
         setContent(prevContent => prevContent + emojiObject.emoji);
@@ -28,21 +28,16 @@ const MessagesInput: React.FC = () => {
 
     const handleChangeContent = (e: React.ChangeEvent<HTMLInputElement>) => {
         setContent(e.target.value);
-        if (e.target.value) {
-            setTypeSend(true);
-        } else {
-            setTypeSend(false);
-        }
-    }
+        setTypeSend(e.target.value !== '' || fileList.length > 0);
+    };
 
     const handleFileListChange = (newFileList: UploadFile[]) => {
-        fileList = newFileList;
-        console.log(fileList);
-        if (!typeSend && fileList.length !== 0) {
-            setTypeSend(true);
-        } else if (fileList.length === 0 && !content) {
-            setTypeSend(false);
-        }
+        setFileList(newFileList);
+        setTypeSend(newFileList.length > 0 || content !== '');
+    };
+
+    const resetFileList = () => {
+        setFileList([]);
     };
 
     const handleSend = async () => {
@@ -50,25 +45,36 @@ const MessagesInput: React.FC = () => {
         const data: Message = {
             content: content,
             fileList: fileList,
-        }
+        };
+
         socket.emit("SEND_MESSAGE", data);
 
-        socket.once("SOCKET_EMIT_MESSAGE", (data) => {
-            data = data;
+        socket.once("SOCKET_EMIT_MESSAGE", () => {
             setContent("");
+            resetFileList();
+            setTypeSend(false);
         });
-    }
+    };
 
     return (
         <div className='messages-input'>
-            <input type="text" placeholder='Nhập tin nhắn ...' value={content} onChange={handleChangeContent} />
+            <input
+                type="text"
+                placeholder='Nhập tin nhắn ...'
+                value={content}
+                onChange={handleChangeContent}
+            />
             <div className='messages-input__button-list'>
                 <Button
                     type='text'
                     icon={<SmileOutlined />}
                     onClick={() => setEmojiVisible(!emojiVisible)}
                 />
-                <UploadImage onFileListChange={handleFileListChange} />
+                <UploadImage
+                    fileList={fileList}
+                    onFileListChange={handleFileListChange}
+                // resetFileList={resetFileList} // Truyền hàm resetFileList xuống UploadImage
+                />
                 <Button
                     className='messages-input__button-list--send'
                     type='text'
@@ -83,6 +89,6 @@ const MessagesInput: React.FC = () => {
             )}
         </div>
     );
-}
+};
 
 export default MessagesInput;

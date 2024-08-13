@@ -1,7 +1,9 @@
 .chat-box-content {
-    height: calc(100% - 75px - 75px);
+    height: calc(100% - 75px - 75px - 20px);
     overflow-y: auto;
     font-size: 14px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 
     &__time-start {
         font-size: 12px;
@@ -10,46 +12,70 @@
     }
 
     &__message-recive, &__message-send {
+        width: calc(75% - 50px);
         position: relative;
         padding-left: 25px;
-        display: flex;
-        align-items: center;
         min-height: 40px;
         margin-top: 1px;
+
+        &--images {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+
+            img {
+                max-width: 100%;
+                border-radius: 10px;
+                margin: 2px 0;
+            }
+        }
     }
 
     &__message-recive {
-        img {
+        &--avatar {
             width: 40px;
             aspect-ratio: 1/1;
             border-radius: 50%;
             overflow: hidden;
             position: absolute;
+            bottom: 0;
         }
 
         &--content {
-            max-width: calc(75% - 50px);
+            display: inline-block;
             margin-left: 50px;
             background-color: #3f87f51a;
             color: #3f87f5;
             padding: 10px 15px;
-            overflow: hidden;
             border-radius: 10px;
-            top: 0;
+            overflow: hidden;
+            position: relative;
+            max-width: 100%;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        &--images {
+            justify-content: flex-start;
+            margin-left: 50px;
         }
     }
 
     &__message-send {
-        display: flex;
-        justify-content: flex-end;
         margin-right: 25px;
+        margin-left: 25%;
         &--content {
-            max-width: calc(75% - 50px);
+            float: right;
             background: #ededed;
             color: #53535f;
             padding: 10px 15px;
             overflow: hidden;
             border-radius: 10px;
+        }
+
+        &--images {
+            justify-content: flex-end;
         }
     }
 }

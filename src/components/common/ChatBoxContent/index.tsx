@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { User } from '../../../redux/actions/currentUser';
 import getSocket from '../../../utils/socket';
+import { Image } from 'antd';
 
 interface Chat {
     _id: string;
@@ -13,22 +14,54 @@ interface Chat {
         avatar: string;
     };
     content: string;
+    images: string[];
+    showAvatar?: boolean
 }
 
-const MessageSend: React.FC<{ content: string }> = ({ content }) => (
+const MessageSend: React.FC<{ message: Chat }> = ({ message }) => (
     <div className='chat-box-content__message-send'>
-        <span className='chat-box-content__message-send--content'>
-            {content}
-        </span>
+        {message.content ?
+            <span className='chat-box-content__message-send--content'>
+                {message.content}
+            </span> : <></>
+        }
+        {message.images.length > 0 ?
+            <div className='chat-box-content__message-send--images'>
+                {message.images.map((item, index) =>
+                    <Image
+                        key={index}
+                        src={item}
+                        alt={item}
+                        preview={true}
+                    />
+                )}
+            </div> : <></>
+        }
     </div>
 );
 
-const MessageReceive: React.FC<{ avatar: string | undefined; content: string }> = ({ avatar, content }) => (
+const MessageReceive: React.FC<{ message: Chat }> = ({ message }) => (
     <div className='chat-box-content__message-recive'>
-        {avatar && <img src={avatar} alt='avatar' />}
-        <span className='chat-box-content__message-recive--content'>
-            {content}
-        </span>
+        {message.showAvatar &&
+            <img className='chat-box-content__message-recive--avatar' src={message.userId.avatar || 'https://echotecwatermakers.com/wp-content/uploads/2020/04/review-600x600.png'} alt='avatar' />
+        }
+        {message.content ?
+            <span className='chat-box-content__message-recive--content'>
+                {message.content}
+            </span> : <></>
+        }
+        {message.images.length > 0 ?
+            <div className='chat-box-content__message-recive--images'>
+                {message.images.map((item, index) =>
+                    <Image
+                        key={index}
+                        src={item}
+                        alt={item}
+                        preview={true}
+                    />
+                )}
+            </div> : <></>
+        }
     </div>
 );
 
@@ -58,6 +91,7 @@ const ChatBoxContent: React.FC = () => {
 
         const socket = getSocket();
         socket.on("SOCKET_EMIT_MESSAGE", (data) => {
+            // console.log(data);
             setChats(prevChats => [...prevChats, data.message]);
         });
         socket.on("SOCKET_BROADCAST_EMIT_MESSAGE", (data) => {
@@ -104,13 +138,12 @@ const ChatBoxContent: React.FC = () => {
                 item.userId._id === currentUser._id ? (
                     <MessageSend
                         key={item._id}
-                        content={item.content}
+                        message={item}
                     />
                 ) : (
                     <MessageReceive
                         key={item._id}
-                        avatar={item.showAvatar ? item.userId.avatar : undefined}
-                        content={item.content}
+                        message={item}
                     />
                 )
             ))}
