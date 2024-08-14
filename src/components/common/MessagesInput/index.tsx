@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { SmileOutlined, LikeFilled, SendOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
@@ -17,30 +17,56 @@ const MessagesInput: React.FC = () => {
     const [typeSend, setTypeSend] = useState(false);
     const [emojiVisible, setEmojiVisible] = useState(false);
     const [fileList, setFileList] = useState<UploadFile[]>([]);
+    const inputRef = useRef<HTMLInputElement>(null);
+    const timeOutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    const handleEmojiClick = (emojiObject: EmojiClickData) => {
+    const showTyping = useCallback(() => {
+        const socket = getSocket();
+        socket.emit("TYPING", "show");
+
+        if (timeOutRef.current) {
+            clearTimeout(timeOutRef.current);
+        }
+
+        timeOutRef.current = setTimeout(() => {
+            socket.emit("TYPING", "hide");
+        }, 3000);
+    }, []);
+
+    const handleEmojiClick = useCallback((emojiObject: EmojiClickData) => {
         setContent(prevContent => prevContent + emojiObject.emoji);
+
+        if (inputRef.current) {
+            const input = inputRef.current;
+            const length = input.value.length;
+            input.focus();
+            input.setSelectionRange(length, length);
+        }
+
         if (!typeSend) {
             setTypeSend(true);
         }
-        setEmojiVisible(false);
-    };
 
-    const handleChangeContent = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmojiVisible(false);
+        showTyping();
+    }, [showTyping, typeSend]);
+
+    const handleChangeContent = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setContent(e.target.value);
         setTypeSend(e.target.value !== '' || fileList.length > 0);
-    };
+        showTyping();
+    }, [fileList.length, showTyping]);
 
-    const handleFileListChange = (newFileList: UploadFile[]) => {
+    const handleFileListChange = useCallback((newFileList: UploadFile[]) => {
         setFileList(newFileList);
         setTypeSend(newFileList.length > 0 || content !== '');
-    };
+    }, [content]);
 
-    const resetFileList = () => {
+    const resetFileList = useCallback(() => {
         setFileList([]);
-    };
+    }, []);
 
-    const handleSend = async () => {
+    const handleSend = useCallback(async () => {
         const socket = getSocket();
         const data: Message = {
             content: content,
@@ -54,11 +80,12 @@ const MessagesInput: React.FC = () => {
             resetFileList();
             setTypeSend(false);
         });
-    };
+    }, [content, fileList, resetFileList]);
 
     return (
         <div className='messages-input'>
             <input
+                ref={inputRef}
                 type="text"
                 placeholder='Nhập tin nhắn ...'
                 value={content}
@@ -73,7 +100,6 @@ const MessagesInput: React.FC = () => {
                 <UploadImage
                     fileList={fileList}
                     onFileListChange={handleFileListChange}
-                // resetFileList={resetFileList} // Truyền hàm resetFileList xuống UploadImage
                 />
                 <Button
                     className='messages-input__button-list--send'

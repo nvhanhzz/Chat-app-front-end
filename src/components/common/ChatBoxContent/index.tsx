@@ -18,6 +18,11 @@ interface Chat {
     showAvatar?: boolean
 }
 
+interface TYPING {
+    _id: string;
+    avatar: string;
+}
+
 const MessageSend: React.FC<{ message: Chat }> = ({ message }) => (
     <div className='chat-box-content__message-send'>
         {message.content ?
@@ -65,8 +70,22 @@ const MessageReceive: React.FC<{ message: Chat }> = ({ message }) => (
     </div>
 );
 
+const TypingIndicator: React.FC<{ typingUsers: TYPING }> = ({ typingUsers }) => (
+    <div className='chat-box-content__typing-indicator'>
+        <div className='chat-box-content__typing-indicator--avatar'>
+            <img className='chat-box-content__message-recive--avatar' src={typingUsers.avatar || 'https://echotecwatermakers.com/wp-content/uploads/2020/04/review-600x600.png'} alt='avatar' />
+        </div>
+        <div className="chat-box-content__typing-indicator--inner-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+);
+
 const ChatBoxContent: React.FC = () => {
     const [chats, setChats] = useState<Chat[]>([]);
+    const [typings, setTypings] = useState<TYPING[]>([]);
     const [loading, setLoading] = useState(true);
     const currentUserState = useSelector((state: RootState) => state.currentUser);
     const chatBoxRef = useRef<HTMLDivElement>(null);
@@ -91,16 +110,30 @@ const ChatBoxContent: React.FC = () => {
 
         const socket = getSocket();
         socket.on("SOCKET_EMIT_MESSAGE", (data) => {
-            // console.log(data);
             setChats(prevChats => [...prevChats, data.message]);
         });
         socket.on("SOCKET_BROADCAST_EMIT_MESSAGE", (data) => {
             setChats(prevChats => [...prevChats, data.message]);
         });
+        socket.on("SOCKET_BROADCAST_EMIT_TYPING", (data) => {
+            if (data.type === "show") {
+                setTypings(prevTypings => {
+                    // Nếu người dùng chưa có trong danh sách thì thêm vào
+                    if (currentUser && data.userId._id !== currentUser._id && !prevTypings.some(user => user._id === data.userId._id)) {
+                        return [...prevTypings, data.userId];
+                    }
+                    return prevTypings;
+                });
+            } else if (data.type === "hide") {
+                setTypings(prevTypings => prevTypings.filter(item => item._id !== data.userId._id));
+            }
+        });
+
 
         return () => {
             socket.off("SOCKET_EMIT_MESSAGE");
             socket.off("SOCKET_BROADCAST_EMIT_MESSAGE");
+            socket.off("SOCKET_BROADCAST_EMIT_TYPING");
         };
     }, []);
 
@@ -108,7 +141,7 @@ const ChatBoxContent: React.FC = () => {
         if (chatBoxRef.current) {
             chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
         }
-    }, [chats]);
+    }, [chats, typings]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -146,6 +179,13 @@ const ChatBoxContent: React.FC = () => {
                         message={item}
                     />
                 )
+            ))}
+
+            {typings.map((item, index) => (
+                <TypingIndicator
+                    key={index}
+                    typingUsers={item}
+                />
             ))}
         </div>
     );

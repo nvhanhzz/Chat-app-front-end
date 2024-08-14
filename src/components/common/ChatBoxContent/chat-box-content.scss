@@ -78,4 +78,64 @@
             justify-content: flex-end;
         }
     }
+
+    &__typing-indicator {
+        display: flex;
+        align-items: center;
+        margin-top: 50px;
+        position: relative;
+    
+        &--avatar {
+            position: absolute;
+            left: 25px;
+            bottom: 0;
+            margin-right: 10px;
+        }
+    
+        &--avatar img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%; 
+            object-fit: cover;
+        }
+    
+        &--inner-dots {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            left: 75px;
+            bottom: 5px;
+    
+            span {
+                display: block;
+                width: 8px;
+                height: 8px;
+                margin: 0 3px;
+                border-radius: 50%;
+                background-color: #888;
+                animation: blink 1.4s infinite both;
+    
+                &:nth-child(2) {
+                    animation-delay: 0.2s;
+                }
+    
+                &:nth-child(3) {
+                    animation-delay: 0.4s;
+                }
+            }
+        }
+    }
+    
+    @keyframes blink {
+        0% {
+            opacity: 0;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+        }
+    }
+    
 }
