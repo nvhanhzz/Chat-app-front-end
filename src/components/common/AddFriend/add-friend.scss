@@ -1,0 +1,58 @@
+.add-friend {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 8px;
+    margin-bottom: 10px;
+
+    &--avatar {
+        width: 100%;
+
+        img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+        }
+    }
+
+    &--full-name {
+        margin: 10px 15px 20px;
+
+        a {    
+            font-size: 17px;
+            font-weight: 500;
+            color: #2b2828;
+            text-decoration: none;
+        }
+    }
+
+    button {
+        padding: 10px;
+        width: 80%;
+        margin-left: 10%;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    &--add-friend {
+        background-color: rgb(84, 84, 201);
+        color: #fff;
+        margin-bottom: 10px;
+
+        &:hover {
+            background-color: rgb(110, 110, 201);
+        }
+    }
+
+    &--remove {
+        background-color: #f5c7c7;
+        margin-bottom: 20px;
+
+        &:hover {
+            background-color: #ddc4c4;
+        }
+    }
+}

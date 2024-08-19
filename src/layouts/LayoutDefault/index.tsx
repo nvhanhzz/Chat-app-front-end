@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import NotificationContainer from "../../components/common/NotificationContainer";
-import Header from "../../components/partials/header";
-import SiderComponent from "../../components/partials/sider";
+import Header from "../../components/partials/Header";
+import SiderComponent from "../../components/partials/Sider";
 import "./layout-default.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";

@@ -1,0 +1,33 @@
+.friend-page-sider {
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    background-color: #fff;
+    padding: 20px;
+    min-height: calc(100vh - 70px - 25px - 25px - 40px - 2px);
+    border: 1px solid #edf2f9; 
+
+    &__button {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    
+        &--logo {
+          font-size: 20px;
+          margin-right: 10px;
+        }
+    
+        &:hover {
+          background-color: #e6f7ff;
+        }
+    
+        &.active {
+          background-color: #e6f7ff;
+        }
+      }
+}

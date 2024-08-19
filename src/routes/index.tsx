@@ -10,6 +10,8 @@ import { useAuth } from './useAuth';
 import Home from '../pages/Home';
 import Friend from '../pages/Friend';
 import Messages from '../pages/Messages';
+import FriendPageContent from '../pages/FriendPageContent';
+import AllFriend from '../pages/AllFriend';
 
 interface RouteType {
     path: string;
@@ -48,6 +50,24 @@ const DefaultRoutes: RouteType[] = [
     {
         path: '/friends',
         element: <PrivateRoute element={Friend} />,
+        children: [
+            {
+                path: 'suggests',
+                element: <PrivateRoute element={FriendPageContent} />
+            },
+            {
+                path: 'requests',
+                element: <PrivateRoute element={FriendPageContent} />
+            },
+            {
+                path: 'sent-invites',
+                element: <PrivateRoute element={FriendPageContent} />
+            },
+            {
+                path: 'all-friends',
+                element: <PrivateRoute element={AllFriend} />
+            }
+        ]
     },
     {
         path: '/messages',
