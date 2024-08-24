@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getFriendSuggest, getListReciveFriendRequests, getListSentFriendRequests } from '../../services/UserService';
+import { getFriendSuggest, getListReciveFriendRequests, getListSentFriendRequests } from '../../../services/UserService';
 import "./friend-page-content.scss";
-import AddFriend, { User, Case } from '../../components/common/AddFriend';
+import AddFriend, { User, Case } from '../../../components/common/AddFriend';
+import getSocket from '../../../utils/socket';
+import { Notification } from '../../common/NotificationHeader';
 
 const FriendPageContent: React.FC = () => {
     const location = useLocation();
@@ -39,6 +41,19 @@ const FriendPageContent: React.FC = () => {
 
         getList();
     }, [type]);
+
+    useEffect(() => {
+        const socket = getSocket();
+        socket.on('SERVER_EMIT_RECIVE_FRIEND_REQUEST', (data: { notification: Notification }) => {
+            if (type === 'requests') {
+                setList(prevList => [data.notification.senderId, ...prevList]);
+            }
+        });
+
+        return () => {
+            socket.off('SERVER_EMIT_RECIVE_FRIEND_REQUEST');
+        };
+    }, []);
 
     return (
         <div className='friend-page-content'>

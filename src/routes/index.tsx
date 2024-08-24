@@ -10,7 +10,7 @@ import { useAuth } from './useAuth';
 import Home from '../pages/Home';
 import Friend from '../pages/Friend';
 import Messages from '../pages/Messages';
-import FriendPageContent from '../pages/FriendPageContent';
+import FriendPageContent from '../components/partials/FriendPageContent';
 import AllFriend from '../pages/AllFriend';
 
 interface RouteType {

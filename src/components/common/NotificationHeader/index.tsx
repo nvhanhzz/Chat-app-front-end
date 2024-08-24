@@ -1,34 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { BellOutlined } from '@ant-design/icons';
 import { Button, Popover, Menu, Badge, Avatar } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import getSocket from '../../../utils/socket';
-import { getNotification } from '../../../services/NotificationService';
+import { getNotification, patchMarkNotificationAsRead } from '../../../services/NotificationService';
 import './notification-header.scss';
+import { User } from '../AddFriend';
 
 type TypeShowNtf = 'un_read' | 'all';
 
-interface User {
-    _id: string;
-    fullName: string;
-    avatar: string;
-}
-
-interface Notification {
+export type Notification = {
     _id: string;
     senderId: User;
     receiverId: User;
     type: string;
     isRead: boolean;
-    linkTo?: string;
+    linkTo: string;
     deleted: boolean;
     createdAt: Date;
 }
 
 const NotificationHeader: React.FC = () => {
+    const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
     const [allNotifications, setAllNotifications] = useState<Notification[]>([]);
     const [displayedNotifications, setDisplayedNotifications] = useState<Notification[]>([]);
     const [filterType, setFilterType] = useState<TypeShowNtf>('un_read');
+
+    const hide = () => {
+        setOpen(false);
+    };
+
+    const handleOpenChange = (newOpen: boolean) => {
+        setOpen(newOpen);
+    };
 
     const chooseNotification = (type: TypeShowNtf) => {
         setFilterType(type);
@@ -69,6 +74,38 @@ const NotificationHeader: React.FC = () => {
         };
     }, []);
 
+    const handleNotificationClick = async (notification: Notification) => {
+        if (!notification.isRead) {
+            try {
+                const response = await patchMarkNotificationAsRead({ notificationId: notification._id });
+                if (response.ok) {
+                    setAllNotifications((prevNotifications) =>
+                        prevNotifications.map((item) =>
+                            item._id === notification._id ? { ...item, isRead: true } : item
+                        )
+                    );
+
+                    setDisplayedNotifications((prev) =>
+                        filterType === 'un_read'
+                            ? prev.filter((item) => item._id !== notification._id)
+                            : prev.map((item) =>
+                                item._id === notification._id ? { ...item, isRead: true } : item
+                            )
+                    );
+
+                } else {
+                    const errorData = await response.json();
+                    console.error('Error marking notification as read:', errorData.message || 'Unknown error');
+                }
+            } catch (error) {
+                console.error('Error marking notification as read:', error);
+            }
+        }
+
+        hide();
+        navigate(notification.linkTo);
+    }
+
     const content = (
         <div className="notification-dropdown">
             <div className='notification-header__top'>
@@ -93,7 +130,11 @@ const NotificationHeader: React.FC = () => {
                 <Menu.Divider />
                 {displayedNotifications.length > 0 ? (
                     displayedNotifications.map((notification) => (
-                        <Menu.Item key={notification._id} className={notification.isRead ? '' : 'unread'}>
+                        <Menu.Item
+                            key={notification._id}
+                            className={notification.isRead ? 'read' : 'unread'}
+                            onClick={() => handleNotificationClick(notification)}
+                        >
                             <div className="notification-item">
                                 <Avatar src={notification.senderId.avatar} />
                                 <div className="notification-content">
@@ -115,7 +156,13 @@ const NotificationHeader: React.FC = () => {
     );
 
     return (
-        <Popover content={content} trigger="click" placement="bottomRight">
+        <Popover
+            content={content}
+            trigger="click"
+            placement="bottomRight"
+            open={open}
+            onOpenChange={handleOpenChange}
+        >
             <Button
                 className='notification-list'
                 type='text'

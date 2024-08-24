@@ -37,6 +37,11 @@
         cursor: pointer;
     }
 
+    &--notification {
+        margin-left: 15px;
+        margin-bottom: 10px;
+    }
+
     &--add-friend {
         background-color: rgb(84, 84, 201);
         color: #fff;
