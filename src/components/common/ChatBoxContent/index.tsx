@@ -89,6 +89,7 @@ const ChatBoxContent: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const currentUserState = useSelector((state: RootState) => state.currentUser);
     const chatBoxRef = useRef<HTMLDivElement>(null);
+    const currentUser: User = currentUserState.user;
 
     useEffect(() => {
         const getChatContent = async () => {
@@ -129,7 +130,6 @@ const ChatBoxContent: React.FC = () => {
             }
         });
 
-
         return () => {
             socket.off("SOCKET_EMIT_MESSAGE");
             socket.off("SOCKET_BROADCAST_EMIT_MESSAGE");
@@ -150,8 +150,6 @@ const ChatBoxContent: React.FC = () => {
     if (!currentUserState || !currentUserState.user) {
         return <div>Không thể tải người dùng.</div>;
     }
-
-    const currentUser: User = currentUserState.user;
 
     const chatsWithAvatars = chats.map((chat, index) => {
         const isLastMessageFromUser = index === chats.length - 1 || chats[index + 1].userId._id !== chat.userId._id;

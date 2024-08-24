@@ -21,8 +21,8 @@ const AddFriend: React.FC<{ user: User, caseType: Case }> = ({ user, caseType })
             userId: userId
         });
 
-        socket.once("SERVER_EMIT_SENT_FRIEND_REQUEST", (data) => {
-            console.log(data);
+        socket.once("SERVER_EMIT_SENT_FRIEND_REQUEST", () => {
+            console.log(userId);
         })
     }
 

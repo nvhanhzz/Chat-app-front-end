@@ -17,6 +17,7 @@ const FriendPageContent: React.FC = () => {
                 case 'suggests':
                     response = await getFriendSuggest();
                     setList(await response.json());
+                    setCaseType({ value: 'default' });
                     break;
 
                 case 'requests':
