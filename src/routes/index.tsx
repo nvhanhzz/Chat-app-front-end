@@ -11,7 +11,7 @@ import Home from '../pages/Home';
 import Friend from '../pages/Friend';
 import Messages from '../pages/Messages';
 import FriendPageContent from '../components/partials/FriendPageContent';
-import AllFriend from '../pages/AllFriend';
+import AllFriend from '../components/partials/AllFriend';
 
 interface RouteType {
     path: string;

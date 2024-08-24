@@ -46,6 +46,7 @@ const FriendPageContent: React.FC = () => {
         const socket = getSocket();
         socket.on('SERVER_EMIT_RECIVE_FRIEND_REQUEST', (data: { notification: Notification }) => {
             if (type === 'requests') {
+                console.log(type);
                 setList(prevList => [data.notification.senderId, ...prevList]);
             }
         });
@@ -53,7 +54,7 @@ const FriendPageContent: React.FC = () => {
         return () => {
             socket.off('SERVER_EMIT_RECIVE_FRIEND_REQUEST');
         };
-    }, []);
+    }, [type]);
 
     return (
         <div className='friend-page-content'>

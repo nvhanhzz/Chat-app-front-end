@@ -35,6 +35,16 @@ const NotificationHeader: React.FC = () => {
         setOpen(newOpen);
     };
 
+    const getNotificationMessage = (type: string) => {
+        const messages: { [key: string]: string } = {
+            like: "đã thích bài viết của bạn",
+            comment: "đã bình luận về bài viết của bạn",
+            friend_request: "đã gửi một yêu cầu kết bạn",
+            accept_friend: "đã chấp nhận lời mời kết bạn"
+        };
+        return messages[type] || "";
+    };
+
     const chooseNotification = (type: TypeShowNtf) => {
         setFilterType(type);
         setDisplayedNotifications(
@@ -65,12 +75,19 @@ const NotificationHeader: React.FC = () => {
         const socket = getSocket();
 
         socket.on("SERVER_EMIT_RECIVE_FRIEND_REQUEST", (data: { notification: Notification }) => {
+            console.log("svsss");
+            setAllNotifications((prevNotifications) => [data.notification, ...prevNotifications]);
+            setDisplayedNotifications((prevNotifications) => [data.notification, ...prevNotifications]);
+        });
+
+        socket.on("SERVER_EMIT_RECIVE_ACCEPT_FRIEND", (data: { notification: Notification }) => {
             setAllNotifications((prevNotifications) => [data.notification, ...prevNotifications]);
             setDisplayedNotifications((prevNotifications) => [data.notification, ...prevNotifications]);
         });
 
         return () => {
             socket.off("SERVER_EMIT_RECIVE_FRIEND_REQUEST");
+            socket.off("SERVER_EMIT_RECIVE_ACCEPT_FRIEND");
         };
     }, []);
 
@@ -139,11 +156,7 @@ const NotificationHeader: React.FC = () => {
                                 <Avatar src={notification.senderId.avatar} />
                                 <div className="notification-content">
                                     <strong>{notification.senderId.fullName} </strong>
-                                    {notification.type === "LIKE" ?
-                                        "đã thích bài viết của bạn" :
-                                        notification.type === "COMMENT" ?
-                                            "đã bình luận về bài viết của bạn" :
-                                            "đã gửi một yêu cầu kết bạn"}
+                                    {getNotificationMessage(notification.type)}
                                 </div>
                             </div>
                         </Menu.Item>
