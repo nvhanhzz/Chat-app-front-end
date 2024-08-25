@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import "./add-friend.scss";
 import getSocket from "../../../utils/socket";
 import { useState } from "react";
+import { Case } from "../../partials/FriendPageContent";
 
 export type User = {
     _id: string;
@@ -10,12 +11,9 @@ export type User = {
     slug: string;
 };
 
-export type Case = {
-    value: 'default' | 'sent' | 'received';
-}
-
-const AddFriend: React.FC<{ user: User, caseType: Case }> = ({ user, caseType }) => {
-    const [requestSent, setRequestSent] = useState(false);
+const AddFriend: React.FC<{ user: User, caseType: Case }> = ({ user, caseType: initialCaseType }) => {
+    const [caseType, setCaseType] = useState<Case>(initialCaseType);
+    const [notificationBadge, setNotificationBadge] = useState("");
     const socket = getSocket();
 
     const addFriend = (userId: string) => {
@@ -24,7 +22,8 @@ const AddFriend: React.FC<{ user: User, caseType: Case }> = ({ user, caseType })
         });
 
         socket.once("SERVER_EMIT_SENT_FRIEND_REQUEST", () => {
-            setRequestSent(true);
+            setCaseType("sent")
+            setNotificationBadge("Bạn đã gửi lời mời");
         });
     }
 
@@ -38,7 +37,8 @@ const AddFriend: React.FC<{ user: User, caseType: Case }> = ({ user, caseType })
         });
 
         socket.once("SERVER_EMIT_ACCEPT_FIEND", () => {
-            setRequestSent(true);
+            setCaseType("accepted");
+            setNotificationBadge("Đã chấp nhận lời mời");
         });
     }
 
@@ -46,8 +46,15 @@ const AddFriend: React.FC<{ user: User, caseType: Case }> = ({ user, caseType })
         console.log(`declineFriendRequest ${userId}`)
     }
 
-    const cancelFriendRequest = (userId: string) => { // làm sau
-        console.log(`cancelFriendRequest ${userId}`)
+    const cancelFriendRequest = (userId: string) => {
+        socket.emit("CANCEL_FIEND_REQUEST", {
+            userId: userId
+        });
+
+        socket.once("SERVER_EMIT_CANCEL_FIEND_REQUEST", () => {
+            setCaseType("default");
+            setNotificationBadge("Đã hủy lời mời kết bạn");
+        });
     }
 
     return (
@@ -63,43 +70,50 @@ const AddFriend: React.FC<{ user: User, caseType: Case }> = ({ user, caseType })
                 </Link>
             </span>
 
-            {caseType.value === 'default' && (
-                !requestSent ? (
-                    <>
-                        <button className='add-friend--add-friend' onClick={() => addFriend(user._id)}>Thêm bạn bè</button>
-                        <button className='add-friend--remove' onClick={() => removeFromSuggestions(user._id)}>Gỡ</button>
-                    </>
-                ) : (
-                    <div>
-                        <div className="add-friend--notification">
-                            Bạn đã gửi lời mời
-                        </div>
-                        <button className='add-friend--remove' onClick={() => cancelFriendRequest(user._id)}>Hủy lời mời</button>
-                    </div>
-                )
-            )}
-
-            {caseType.value === 'received' && (
-                !requestSent ? (
-                    <>
-                        <button className='add-friend--add-friend' onClick={() => acceptFriendRequest(user._id)}>Chấp nhận</button>
-                        <button className='add-friend--remove' onClick={() => declineFriendRequest(user._id)}>Từ chối</button>
-                    </>
-                ) : (
-                    <div>
-                        <div className="add-friend--notification">
-                            Đã chấp nhận lời mời
-                        </div>
-                    </div>
-                )
-            )}
-
-            {caseType.value === 'sent' &&
+            {caseType === 'default' &&
                 <>
-                    <button className='add-friend--remove' onClick={() => cancelFriendRequest(user._id)}>Hủy lời mời</button>
+                    {notificationBadge &&
+                        <div className="add-friend--notification">
+                            {notificationBadge}
+                        </div>
+                    }
+                    <button className='add-friend--add-friend' onClick={() => addFriend(user._id)}>Thêm bạn bè</button>
+                    <button className='add-friend--remove' onClick={() => removeFromSuggestions(user._id)}>Gỡ</button>
                 </>
             }
 
+            {caseType === 'received' && (
+                <>
+                    {notificationBadge &&
+                        <div className="add-friend--notification">
+                            {notificationBadge}
+                        </div>
+                    }
+                    <button className='add-friend--add-friend' onClick={() => acceptFriendRequest(user._id)}>Chấp nhận</button>
+                    <button className='add-friend--remove' onClick={() => declineFriendRequest(user._id)}>Từ chối</button>
+                </>
+            )}
+
+            {caseType === 'sent' && (
+                <>
+                    {notificationBadge &&
+                        <div className="add-friend--notification">
+                            {notificationBadge}
+                        </div>
+                    }
+                    <button className='add-friend--remove' onClick={() => cancelFriendRequest(user._id)}>Hủy lời mời</button>
+                </>
+            )}
+
+            {caseType === 'accepted' && (
+                <>
+                    {notificationBadge &&
+                        <div className="add-friend--notification">
+                            {notificationBadge}
+                        </div>
+                    }
+                </>
+            )}
         </div>
     );
 };

@@ -72,22 +72,34 @@ const NotificationHeader: React.FC = () => {
 
         fetchNotifications();
 
+        const receiveFriendRequest = (data: { notification: Notification }) => {
+            setAllNotifications((prevNotifications) => [data.notification, ...prevNotifications]);
+            setDisplayedNotifications((prevNotifications) => [data.notification, ...prevNotifications]);
+        }
+
+        const reciveAcceptFriend = (data: { notification: Notification }) => {
+            setAllNotifications((prevNotifications) => [data.notification, ...prevNotifications]);
+            setDisplayedNotifications((prevNotifications) => [data.notification, ...prevNotifications]);
+        }
+
+        const reciveCancelFriendRequest = (data: { notification: Notification }) => {
+            setAllNotifications(prevNotifications =>
+                prevNotifications.filter(item => item._id !== data.notification._id)
+            );
+            setDisplayedNotifications(prevDisplayedNotifications =>
+                prevDisplayedNotifications.filter(item => item._id !== data.notification._id)
+            );
+        }
+
         const socket = getSocket();
-
-        socket.on("SERVER_EMIT_RECIVE_FRIEND_REQUEST", (data: { notification: Notification }) => {
-            console.log("svsss");
-            setAllNotifications((prevNotifications) => [data.notification, ...prevNotifications]);
-            setDisplayedNotifications((prevNotifications) => [data.notification, ...prevNotifications]);
-        });
-
-        socket.on("SERVER_EMIT_RECIVE_ACCEPT_FRIEND", (data: { notification: Notification }) => {
-            setAllNotifications((prevNotifications) => [data.notification, ...prevNotifications]);
-            setDisplayedNotifications((prevNotifications) => [data.notification, ...prevNotifications]);
-        });
+        socket.on("SERVER_EMIT_RECIVE_FRIEND_REQUEST", receiveFriendRequest);
+        socket.on("SERVER_EMIT_RECIVE_ACCEPT_FRIEND", reciveAcceptFriend);
+        socket.on("SERVER_EMIT_RECIVE_CANCEL_FIEND_REQUEST", reciveCancelFriendRequest);
 
         return () => {
-            socket.off("SERVER_EMIT_RECIVE_FRIEND_REQUEST");
-            socket.off("SERVER_EMIT_RECIVE_ACCEPT_FRIEND");
+            socket.off("SERVER_EMIT_RECIVE_FRIEND_REQUEST", receiveFriendRequest);
+            socket.off("SERVER_EMIT_RECIVE_ACCEPT_FRIEND", reciveAcceptFriend);
+            socket.off("SERVER_EMIT_RECIVE_CANCEL_FIEND_REQUEST", reciveCancelFriendRequest);
         };
     }, []);
 
