@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getFriendSuggest, getListReciveFriendRequests, getListSentFriendRequests } from '../../../services/UserService';
 import "./friend-page-content.scss";
-import AddFriend, { User } from '../../../components/common/AddFriend';
+import AddFriend from '../../../components/common/AddFriend';
 import getSocket from '../../../utils/socket';
 import { Notification } from '../../common/NotificationHeader';
+import { User } from '../../common/Friend';
 
 export type Case = 'default' | 'sent' | 'received' | 'accepted';
 type Type = 'suggests' | 'requests' | 'sent-invites';

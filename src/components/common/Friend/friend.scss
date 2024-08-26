@@ -1,0 +1,65 @@
+.friend {
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    width: calc(50% - 20px);
+    position: relative;
+
+    &--avatar {
+        margin-right: 10px;
+    }
+
+    img {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    &--full-name {
+        font-size: 16px;
+        font-weight: bold;
+
+        a {
+            text-decoration: none;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+    }
+
+    &--option {
+        position: absolute;
+        right: 10px;
+        font-size: 20px;
+        color: #000000;
+    }
+}
+
+.ant-dropdown-menu {
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 5px 10px !important;
+}
+
+.ant-dropdown-menu-item {
+    font-size: 14px;
+    color: #333;
+
+    &:hover {
+        cursor: pointer !important;
+        background-color: #f7f3f3 !important;
+    }
+
+    .anticon {
+        margin-right: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .friend {
+        width: 100%; 
+    }
+}

@@ -3,13 +3,7 @@ import "./add-friend.scss";
 import getSocket from "../../../utils/socket";
 import { useState } from "react";
 import { Case } from "../../partials/FriendPageContent";
-
-export type User = {
-    _id: string;
-    fullName: string;
-    avatar?: string;
-    slug: string;
-};
+import { User } from "../Friend";
 
 const AddFriend: React.FC<{ user: User, caseType: Case }> = ({ user, caseType: initialCaseType }) => {
     const [caseType, setCaseType] = useState<Case>(initialCaseType);

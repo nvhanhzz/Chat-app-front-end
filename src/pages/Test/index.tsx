@@ -1,27 +1,27 @@
-import React, { useState } from 'react';
-import { Button, Popover } from 'antd';
+import { Dropdown, Menu } from 'antd';
+import { EllipsisOutlined } from '@ant-design/icons';
 
-const Test: React.FC = () => {
-    const [open, setOpen] = useState(false);
-
-    const hide = () => {
-        setOpen(false);
-    };
-
-    const handleOpenChange = (newOpen: boolean) => {
-        setOpen(newOpen);
-    };
+const Test = () => {
+    const menu = (
+        <Menu>
+            <Menu.Item key="1">
+                Lựa chọn 1
+            </Menu.Item>
+            <Menu.Item key="2">
+                Lựa chọn 2
+            </Menu.Item>
+            <Menu.Item key="3">
+                Lựa chọn 3
+            </Menu.Item>
+        </Menu>
+    );
 
     return (
-        <Popover
-            content={<a onClick={hide}>Close</a>}
-            title="Title"
-            trigger="click"
-            open={open}
-            onOpenChange={handleOpenChange}
-        >
-            <Button type="primary">Click me</Button>
-        </Popover>
+        <Dropdown overlay={menu} trigger={['click']}>
+            {/* <Button> */}
+            <EllipsisOutlined />
+            {/* </Button> */}
+        </Dropdown>
     );
 };
 
