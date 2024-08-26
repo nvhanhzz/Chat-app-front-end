@@ -6,13 +6,16 @@ import "./messages-input.scss";
 import getSocket from '../../../utils/socket';
 import UploadImage from '../UploadImage';
 import type { UploadFile } from 'antd';
+import { ChatBoxHeadProps } from '../ChatBoxHead';
 
 interface Message {
     content: string;
     fileList?: UploadFile[];
 }
 
-const MessagesInput: React.FC = () => {
+const MessagesInput: React.FC<ChatBoxHeadProps> = ({ roomChat }) => {
+    console.log(roomChat);
+
     const [content, setContent] = useState('');
     const [typeSend, setTypeSend] = useState(false);
     const [emojiVisible, setEmojiVisible] = useState(false);

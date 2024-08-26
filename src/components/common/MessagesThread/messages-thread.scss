@@ -5,6 +5,7 @@
     padding-left: 25px;
     border-bottom: 1px solid #edf2f9;
     cursor: pointer;
+    overflow-x: hidden;
 
     &:hover {
         background-color: #f5f5f5;
@@ -22,6 +23,8 @@
     }
 
     &__details {
+        width: 100%;
+
         &--name {
             width: 250px;
             font-weight: 500;
@@ -31,12 +34,26 @@
         }
 
         &--last-message {
-            width: 250px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        &--last-message-content {
+            display: inline-block;
+            max-width: calc(100% - 80px);
             font-size: 12px;
             color: #888;
             white-space: nowrap;    
             overflow: hidden;       
-            text-overflow: ellipsis;   
+            text-overflow: ellipsis;  
+        }
+        
+        &--last-message-time {
+            font-size: 12px;
+            font-weight: 100;
+            color: #aaa;
+            margin-left: 10px;
         }
     }
 }

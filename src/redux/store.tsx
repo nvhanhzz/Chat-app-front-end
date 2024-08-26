@@ -10,7 +10,7 @@ export interface RootState {
     auth: authState;
     fold: foldState;
     currentUser: currentUserState;
-    socket: socketState
+    socket: socketState;
 }
 
 const rootReducer = combineReducers({

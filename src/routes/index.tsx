@@ -12,6 +12,7 @@ import Friend from '../pages/Friend';
 import Messages from '../pages/Messages';
 import FriendPageContent from '../components/partials/FriendPageContent';
 import AllFriend from '../components/partials/AllFriend';
+import RoomChat from '../components/partials/RoomChat';
 
 interface RouteType {
     path: string;
@@ -72,6 +73,12 @@ const DefaultRoutes: RouteType[] = [
     {
         path: '/messages',
         element: <PrivateRoute element={Messages} />,
+        children: [
+            {
+                path: ':roomId',
+                element: <PrivateRoute element={RoomChat} />
+            }
+        ]
     },
     {
         path: '*',

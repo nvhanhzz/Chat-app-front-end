@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './chat-box-content.scss';
-import { getChat } from '../../../services/ChatService';
+import { getChatForRoom } from '../../../services/ChatService';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { User } from '../../../redux/actions/currentUser';
 import getSocket from '../../../utils/socket';
 import { Image } from 'antd';
+import { ChatBoxHeadProps } from '../ChatBoxHead';
 
 interface Chat {
     _id: string;
@@ -83,18 +84,18 @@ const TypingIndicator: React.FC<{ typingUsers: TYPING }> = ({ typingUsers }) => 
     </div>
 );
 
-const ChatBoxContent: React.FC = () => {
+const ChatBoxContent: React.FC<ChatBoxHeadProps> = ({ roomChat }) => {
     const [chats, setChats] = useState<Chat[]>([]);
     const [typings, setTypings] = useState<TYPING[]>([]);
     const [loading, setLoading] = useState(true);
     const currentUserState = useSelector((state: RootState) => state.currentUser);
     const chatBoxRef = useRef<HTMLDivElement>(null);
-    const currentUser: User = currentUserState.user;
+    const currentUser: User | null = currentUserState?.user || null;
 
     useEffect(() => {
-        const getChatContent = async () => {
+        const fetchChats = async () => {
             try {
-                const response = await getChat();
+                const response = await getChatForRoom(roomChat.roomId);
                 if (response.ok) {
                     const result = await response.json();
                     setChats(result.chats);
@@ -107,7 +108,7 @@ const ChatBoxContent: React.FC = () => {
                 setLoading(false);
             }
         };
-        getChatContent();
+        fetchChats();
 
         const socket = getSocket();
         socket.on("SOCKET_EMIT_MESSAGE", (data) => {
@@ -135,7 +136,7 @@ const ChatBoxContent: React.FC = () => {
             socket.off("SOCKET_BROADCAST_EMIT_MESSAGE");
             socket.off("SOCKET_BROADCAST_EMIT_TYPING");
         };
-    }, []);
+    }, [roomChat]);
 
     useEffect(() => {
         if (chatBoxRef.current) {
@@ -147,7 +148,7 @@ const ChatBoxContent: React.FC = () => {
         return <div>Loading...</div>;
     }
 
-    if (!currentUserState || !currentUserState.user) {
+    if (!currentUser) {
         return <div>Không thể tải người dùng.</div>;
     }
 
