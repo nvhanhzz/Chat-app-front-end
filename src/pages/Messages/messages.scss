@@ -15,7 +15,11 @@
 
         @media (max-width: 767px) {
             width: 100%;
-            // display: none;
+            display: block;
+
+            &.hidden {
+                display: none;
+            }
         }
     }
 
@@ -25,7 +29,10 @@
 
         @media (max-width: 767px) {
             width: 100%;
-            display: none;
+
+            &.hidden {
+                display: none;
+            }
         }
     }
 }

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import SearchMessagesThread from '../../components/common/SearchMessagesThread';
 import MessagesThread, { MessagesThreadProps } from '../../components/common/MessagesThread';
-import "./messages.scss";
 import { getMessageThreads } from '../../services/ChatService';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import getSocket from '../../utils/socket';
 import { Chat } from '../../components/common/ChatBoxContent';
+import "./messages.scss";
 
 const Messages: React.FC = () => {
+    const { pathname } = useLocation();
     const socket = getSocket();
     const [messagesThreads, setMessagesThreads] = useState<MessagesThreadProps[]>([]);
 
@@ -54,7 +55,7 @@ const Messages: React.FC = () => {
 
     return (
         <div className='messages'>
-            <div className='messages__threads'>
+            <div className={`messages__threads ${pathname !== '/messages' ? 'hidden' : ''}`}>
                 <SearchMessagesThread />
                 <div className='messages__threads--list'>
                     {
@@ -70,7 +71,7 @@ const Messages: React.FC = () => {
                     }
                 </div>
             </div>
-            <div className='messages__content'>
+            <div className={`messages__content ${pathname === '/messages' ? 'hidden' : ''}`}>
                 <Outlet context={{ messagesThreads: messagesThreads }} />
             </div>
         </div>

@@ -3,14 +3,21 @@ import { Badge, Button } from 'antd';
 import { InfoCircleOutlined, LeftCircleOutlined } from '@ant-design/icons';
 import "./chat-box-head.scss";
 import { MessagesThreadProps } from '../MessagesThread';
+import { useNavigate } from 'react-router-dom';
 
 export interface ChatBoxHeadProps {
     roomChat: MessagesThreadProps; // Đảm bảo rằng props có thể là undefined
 }
 
 const ChatBoxHead: React.FC<ChatBoxHeadProps> = ({ roomChat }) => {
+    const navigate = useNavigate();
+
     if (!roomChat) {
-        return <div>Room not found</div>; // Xử lý trường hợp không có dữ liệu
+        return <div>Room not found</div>;
+    }
+
+    const handleClick = () => {
+        navigate("/messages");
     }
 
     return (
@@ -19,6 +26,7 @@ const ChatBoxHead: React.FC<ChatBoxHeadProps> = ({ roomChat }) => {
                 type="text"
                 className='chat-box-head__back-button'
                 icon={<LeftCircleOutlined />}
+                onClick={() => handleClick()}
             />
 
             <div className='chat-box-head__avatar'>
