@@ -8,20 +8,31 @@ import getSocket from '../../../utils/socket';
 import { Image } from 'antd';
 import { ChatBoxHeadProps } from '../ChatBoxHead';
 
-interface Chat {
+export interface Chat {
     _id: string;
+    roomChatId: string;
     userId: {
         _id: string;
         avatar: string;
     };
     content: string;
     images: string[];
-    showAvatar?: boolean
+    showAvatar?: boolean;
 }
 
 interface TYPING {
     _id: string;
     avatar: string;
+}
+
+interface TypingData {
+    userId: {
+        _id: string;
+        avatar?: string;
+        fullName?: string;
+    };
+    type: 'show' | 'hide';
+    roomChatId: string;
 }
 
 const MessageSend: React.FC<{ message: Chat }> = ({ message }) => (
@@ -85,6 +96,7 @@ const TypingIndicator: React.FC<{ typingUsers: TYPING }> = ({ typingUsers }) => 
 );
 
 const ChatBoxContent: React.FC<ChatBoxHeadProps> = ({ roomChat }) => {
+    const socket = getSocket();
     const [chats, setChats] = useState<Chat[]>([]);
     const [typings, setTypings] = useState<TYPING[]>([]);
     const [loading, setLoading] = useState(true);
@@ -110,31 +122,37 @@ const ChatBoxContent: React.FC<ChatBoxHeadProps> = ({ roomChat }) => {
         };
         fetchChats();
 
-        const socket = getSocket();
-        socket.on("SOCKET_EMIT_MESSAGE", (data) => {
-            setChats(prevChats => [...prevChats, data.message]);
-        });
-        socket.on("SOCKET_BROADCAST_EMIT_MESSAGE", (data) => {
-            setChats(prevChats => [...prevChats, data.message]);
-        });
-        socket.on("SOCKET_BROADCAST_EMIT_TYPING", (data) => {
-            if (data.type === "show") {
+        const serverBroadcastEmitMessage = (data: { message: Chat }) => {
+            if (data.message.roomChatId === roomChat.roomId) {
+                setChats(prevChats => [...prevChats, data.message]);
+            }
+        }
+
+        const serverBroadCastEmitTyping = (data: TypingData) => {
+            if (data.roomChatId === roomChat.roomId && data.type === "show") {
                 setTypings(prevTypings => {
-                    // Nếu người dùng chưa có trong danh sách thì thêm vào
-                    if (currentUser && data.userId._id !== currentUser._id && !prevTypings.some(user => user._id === data.userId._id)) {
-                        return [...prevTypings, data.userId];
+                    if (currentUser && data.userId._id !== currentUser._id) {
+                        if (!prevTypings.some(user => user._id === data.userId._id)) {
+                            const newTyping: TYPING = {
+                                _id: data.userId._id,
+                                avatar: data.userId.avatar || "",
+                            };
+                            return [...prevTypings, newTyping];
+                        }
                     }
                     return prevTypings;
                 });
             } else if (data.type === "hide") {
                 setTypings(prevTypings => prevTypings.filter(item => item._id !== data.userId._id));
             }
-        });
+        }
+
+        socket.on("SERVER_EMIT_MESSAGE", serverBroadcastEmitMessage);
+        socket.on("SERVER_EMIT_TYPING", serverBroadCastEmitTyping);
 
         return () => {
-            socket.off("SOCKET_EMIT_MESSAGE");
-            socket.off("SOCKET_BROADCAST_EMIT_MESSAGE");
-            socket.off("SOCKET_BROADCAST_EMIT_TYPING");
+            socket.off("SERVER_EMIT_MESSAGE", serverBroadcastEmitMessage);
+            socket.off("SERVER_EMIT_TYPING", serverBroadCastEmitTyping);
         };
     }, [roomChat]);
 

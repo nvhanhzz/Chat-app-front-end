@@ -4,8 +4,11 @@ import MessagesThread, { MessagesThreadProps } from '../../components/common/Mes
 import "./messages.scss";
 import { getMessageThreads } from '../../services/ChatService';
 import { Outlet } from 'react-router-dom';
+import getSocket from '../../utils/socket';
+import { Chat } from '../../components/common/ChatBoxContent';
 
 const Messages: React.FC = () => {
+    const socket = getSocket();
     const [messagesThreads, setMessagesThreads] = useState<MessagesThreadProps[]>([]);
 
     useEffect(() => {
@@ -19,6 +22,34 @@ const Messages: React.FC = () => {
         };
 
         fetchMessagesThreads();
+
+        const serverBroadcastEmitMessage = (data: { message: Chat }) => {
+            setMessagesThreads(prevThreads => {
+                const existingRoomIndex = prevThreads.findIndex(thread => thread.roomId === data.message.roomChatId);
+                if (existingRoomIndex > -1) {
+                    const updatedThreads = [...prevThreads];
+                    const updatedRoom = {
+                        ...updatedThreads[existingRoomIndex],
+                        lastMessage: {
+                            content: data.message.content,
+                            createAt: new Date().toISOString(),
+                            userId: data.message.userId._id
+                        }
+                    };
+                    updatedThreads.splice(existingRoomIndex, 1);
+                    updatedThreads.unshift(updatedRoom);
+                    return updatedThreads;
+                }
+
+                return prevThreads;
+            });
+        };
+
+        socket.on("SERVER_EMIT_MESSAGE", serverBroadcastEmitMessage);
+
+        return () => {
+            socket.off("SERVER_EMIT_MESSAGE", serverBroadcastEmitMessage);
+        };
     }, []);
 
     return (
@@ -34,7 +65,7 @@ const Messages: React.FC = () => {
                                 avatar={item.avatar}
                                 title={item.title}
                                 lastMessage={item.lastMessage}
-                                lastMessageAt={item.lastMessageAt} />
+                            />
                         ))
                     }
                 </div>

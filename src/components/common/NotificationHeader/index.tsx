@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import getSocket from '../../../utils/socket';
 import { getNotification, patchMarkNotificationAsRead } from '../../../services/NotificationService';
 import './notification-header.scss';
-import { User } from '../AddFriend';
+import { User } from '../Friend';
 
 type TypeShowNtf = 'un_read' | 'all';
 

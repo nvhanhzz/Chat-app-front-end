@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { SmileOutlined, LikeFilled, SendOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
@@ -9,13 +9,18 @@ import type { UploadFile } from 'antd';
 import { ChatBoxHeadProps } from '../ChatBoxHead';
 
 interface Message {
+    roomChatId: string;
     content: string;
     fileList?: UploadFile[];
 }
 
-const MessagesInput: React.FC<ChatBoxHeadProps> = ({ roomChat }) => {
-    console.log(roomChat);
+interface Typing {
+    roomChatId: string;
+    type: 'show' | 'hide';
+}
 
+const MessagesInput: React.FC<ChatBoxHeadProps> = ({ roomChat }) => {
+    const socket = getSocket();
     const [content, setContent] = useState('');
     const [typeSend, setTypeSend] = useState(false);
     const [emojiVisible, setEmojiVisible] = useState(false);
@@ -23,18 +28,31 @@ const MessagesInput: React.FC<ChatBoxHeadProps> = ({ roomChat }) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const timeOutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+    useEffect(() => {
+        setContent('');
+        setFileList([]);
+        setTypeSend(false);
+        setEmojiVisible(false);
+
+        return () => {
+            const typingData: Typing = { roomChatId: roomChat.roomId, type: 'hide' };
+            socket.emit("TYPING", typingData);
+        };
+    }, [roomChat]);
+
     const showTyping = useCallback(() => {
-        const socket = getSocket();
-        socket.emit("TYPING", "show");
+        const typingData: Typing = { roomChatId: roomChat.roomId, type: 'show' };
+        socket.emit("TYPING", typingData);
 
         if (timeOutRef.current) {
             clearTimeout(timeOutRef.current);
         }
 
         timeOutRef.current = setTimeout(() => {
-            socket.emit("TYPING", "hide");
+            const typingData: Typing = { roomChatId: roomChat.roomId, type: 'hide' };
+            socket.emit("TYPING", typingData);
         }, 3000);
-    }, []);
+    }, [roomChat]);
 
     const handleEmojiClick = useCallback((emojiObject: EmojiClickData) => {
         setContent(prevContent => prevContent + emojiObject.emoji);
@@ -70,20 +88,20 @@ const MessagesInput: React.FC<ChatBoxHeadProps> = ({ roomChat }) => {
     }, []);
 
     const handleSend = useCallback(async () => {
-        const socket = getSocket();
         const data: Message = {
+            roomChatId: roomChat.roomId,
             content: content,
             fileList: fileList,
         };
 
         socket.emit("SEND_MESSAGE", data);
 
-        socket.once("SOCKET_EMIT_MESSAGE", () => {
+        socket.once("SERVER_EMIT_MESSAGE", () => {
             setContent("");
             resetFileList();
             setTypeSend(false);
         });
-    }, [content, fileList, resetFileList]);
+    }, [roomChat, content, fileList, resetFileList]);
 
     return (
         <div className='messages-input'>

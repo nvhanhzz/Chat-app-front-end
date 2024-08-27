@@ -1,13 +1,21 @@
 import React from 'react';
-import "./messages-thread.scss";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import './messages-thread.scss';
+import { User } from '../../../redux/actions/currentUser';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
+
+export interface LastMessage {
+    content: string;
+    createAt: string;
+    userId: string;
+}
 
 export interface MessagesThreadProps {
-    roomId: string,
+    roomId: string;
     avatar: string;
     title: string;
-    lastMessage: string;
-    lastMessageAt: string; // ISO string hoặc timestamp
+    lastMessage: LastMessage;
 }
 
 const formatTimeAgoShort = (date: Date): string => {
@@ -28,24 +36,36 @@ const formatTimeAgoShort = (date: Date): string => {
     return 'Just now';
 };
 
-const MessagesThread: React.FC<MessagesThreadProps> = ({ roomId, avatar, title, lastMessage, lastMessageAt }) => {
-    const timeAgo = formatTimeAgoShort(new Date(lastMessageAt));
+const MessagesThread: React.FC<MessagesThreadProps> = ({ roomId, avatar, title, lastMessage }) => {
+    const { pathname } = useLocation();
     const navigate = useNavigate();
+
+    const currentUserState = useSelector((state: RootState) => state.currentUser);
+    if (!currentUserState || !currentUserState.user) {
+        return <div>Loading...</div>;
+    }
+    const currentUser: User = currentUserState.user;
+
+    const currentRoomId = pathname.split('/').pop();
+
+    const isActive = currentRoomId === roomId;
+
+    const timeAgo = lastMessage.createAt ? "• " + formatTimeAgoShort(new Date(lastMessage.createAt)) : '';
 
     const handleClick = () => {
         navigate(`${roomId}`);
     }
 
     return (
-        <div className='messages-thread' onClick={handleClick}>
+        <div className={`messages-thread ${isActive ? 'active' : ''}`} onClick={handleClick}>
             <div className='messages-thread__avatar'>
                 <img src={avatar} alt={`${title}'s avatar`} />
             </div>
             <div className='messages-thread__details'>
                 <div className='messages-thread__details--name'>{title}</div>
                 <div className='messages-thread__details--last-message'>
-                    <div className='messages-thread__details--last-message-content'>{lastMessage}</div>
-                    <span className='messages-thread__details--last-message-time'>• {timeAgo}</span>
+                    <div className='messages-thread__details--last-message-content'>{lastMessage && lastMessage.content && (currentUser._id === lastMessage.userId ? 'Bạn: ' : '') + lastMessage.content}</div>
+                    <span className='messages-thread__details--last-message-time'>{timeAgo}</span>
                 </div>
             </div>
         </div>
