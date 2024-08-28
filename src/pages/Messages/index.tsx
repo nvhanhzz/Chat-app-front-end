@@ -11,12 +11,20 @@ const Messages: React.FC = () => {
     const { pathname } = useLocation();
     const socket = getSocket();
     const [messagesThreads, setMessagesThreads] = useState<MessagesThreadProps[]>([]);
+    const [searchKeyword, setSearchKeyword] = useState<string>('');
+    const [displayedThreads, setDisplayedThreads] = useState<MessagesThreadProps[]>([]);
+
+    const handleKeywordChange = (keyword: string) => {
+        setSearchKeyword(keyword);
+    }
 
     useEffect(() => {
         const fetchMessagesThreads = async () => {
             try {
                 const response = await getMessageThreads();
-                setMessagesThreads((await response.json()).rooms);
+                const rooms = (await response.json()).rooms;
+                setMessagesThreads(rooms);
+                setDisplayedThreads(rooms);
             } catch (error) {
                 console.error(error);
             }
@@ -39,6 +47,10 @@ const Messages: React.FC = () => {
                     };
                     updatedThreads.splice(existingRoomIndex, 1);
                     updatedThreads.unshift(updatedRoom);
+                    setDisplayedThreads(updatedThreads.filter(thread => {
+                        const regex = new RegExp(searchKeyword, 'i');
+                        return regex.test(thread.title);
+                    }));
                     return updatedThreads;
                 }
 
@@ -58,6 +70,10 @@ const Messages: React.FC = () => {
                     }
                     return thread;
                 });
+                setDisplayedThreads(updatedThreads.filter(thread => {
+                    const regex = new RegExp(searchKeyword, 'i');
+                    return regex.test(thread.title);
+                }));
                 return updatedThreads;
             });
         };
@@ -67,17 +83,22 @@ const Messages: React.FC = () => {
 
         return () => {
             socket.off("SERVER_EMIT_MESSAGE", serverEmitMessage);
-            socket.on("SERVER_EMIT_ONLINE", serverEmitOnline);
+            socket.off("SERVER_EMIT_ONLINE", serverEmitOnline);
         };
-    }, []);
+    }, [socket, searchKeyword]);
+
+    useEffect(() => {
+        const regex = new RegExp(searchKeyword, 'i');
+        setDisplayedThreads(messagesThreads.filter(thread => regex.test(thread.title)));
+    }, [searchKeyword, messagesThreads]);
 
     return (
         <div className='messages'>
             <div className={`messages__threads ${pathname !== '/messages' ? 'hidden' : ''}`}>
-                <SearchMessagesThread />
+                <SearchMessagesThread onKeywordChange={handleKeywordChange} />
                 <div className='messages__threads--list'>
                     {
-                        messagesThreads.map((item, index) => (
+                        displayedThreads.map((item, index) => (
                             <MessagesThread
                                 key={index}
                                 roomId={item.roomId}

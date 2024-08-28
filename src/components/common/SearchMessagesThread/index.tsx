@@ -2,11 +2,17 @@ import React, { useState } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import "./search-messages-thread.scss";
 
-const SearchMessagesThread: React.FC = () => {
+interface SearchMessagesThreadProps {
+    onKeywordChange: (keyword: string) => void;
+}
+
+const SearchMessagesThread: React.FC<SearchMessagesThreadProps> = ({ onKeywordChange }) => {
     const [keyword, setKeyword] = useState('');
 
     const handleChangeKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setKeyword(e.target.value);
+        const newKeyword = e.target.value;
+        setKeyword(newKeyword);
+        onKeywordChange(newKeyword); // Gọi hàm callback khi giá trị thay đổi
     }
 
     return (
