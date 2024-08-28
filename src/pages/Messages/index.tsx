@@ -24,7 +24,7 @@ const Messages: React.FC = () => {
 
         fetchMessagesThreads();
 
-        const serverBroadcastEmitMessage = (data: { message: Chat }) => {
+        const serverEmitMessage = (data: { message: Chat }) => {
             setMessagesThreads(prevThreads => {
                 const existingRoomIndex = prevThreads.findIndex(thread => thread.roomId === data.message.roomChatId);
                 if (existingRoomIndex > -1) {
@@ -46,10 +46,28 @@ const Messages: React.FC = () => {
             });
         };
 
-        socket.on("SERVER_EMIT_MESSAGE", serverBroadcastEmitMessage);
+        const serverEmitOnline = (data: { isOnline: boolean; lastOnline: Date; roomId: string }) => {
+            setMessagesThreads(prevThreads => {
+                const updatedThreads = prevThreads.map(thread => {
+                    if (thread.roomId === data.roomId) {
+                        return {
+                            ...thread,
+                            isOnline: data.isOnline,
+                            lastOnline: new Date(data.lastOnline)
+                        }
+                    }
+                    return thread;
+                });
+                return updatedThreads;
+            });
+        };
+
+        socket.on("SERVER_EMIT_MESSAGE", serverEmitMessage);
+        socket.on("SERVER_EMIT_ONLINE", serverEmitOnline);
 
         return () => {
-            socket.off("SERVER_EMIT_MESSAGE", serverBroadcastEmitMessage);
+            socket.off("SERVER_EMIT_MESSAGE", serverEmitMessage);
+            socket.on("SERVER_EMIT_ONLINE", serverEmitOnline);
         };
     }, []);
 
@@ -63,8 +81,11 @@ const Messages: React.FC = () => {
                             <MessagesThread
                                 key={index}
                                 roomId={item.roomId}
+                                type={item.type}
                                 avatar={item.avatar}
                                 title={item.title}
+                                isOnline={item.isOnline}
+                                lastOnline={item.lastOnline}
                                 lastMessage={item.lastMessage}
                             />
                         ))

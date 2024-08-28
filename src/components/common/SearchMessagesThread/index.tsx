@@ -11,10 +11,10 @@ const SearchMessagesThread: React.FC = () => {
 
     return (
         <div className='search-messages-thread'>
-            <label htmlFor="keyword">
+            <label htmlFor="keySearch">
                 <SearchOutlined />
             </label>
-            <input id='keyword' type="text" placeholder='Tìm đoạn chat ...' value={keyword} onChange={handleChangeKeyword} />
+            <input id='keySearch' type="text" placeholder='Tìm đoạn chat ...' value={keyword} onChange={handleChangeKeyword} />
         </div>
     );
 }

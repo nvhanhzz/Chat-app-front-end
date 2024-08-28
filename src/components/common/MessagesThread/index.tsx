@@ -1,9 +1,10 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './messages-thread.scss';
 import { User } from '../../../redux/actions/currentUser';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
+import { Badge } from 'antd';
+import './messages-thread.scss';
 
 export interface LastMessage {
     content: string;
@@ -14,7 +15,10 @@ export interface LastMessage {
 export interface MessagesThreadProps {
     roomId: string;
     avatar: string;
+    type: 'one-to-one' | 'group';
     title: string;
+    isOnline: boolean;
+    lastOnline: Date;
     lastMessage: LastMessage;
 }
 
@@ -36,7 +40,7 @@ const formatTimeAgoShort = (date: Date): string => {
     return 'Just now';
 };
 
-const MessagesThread: React.FC<MessagesThreadProps> = ({ roomId, avatar, title, lastMessage }) => {
+const MessagesThread: React.FC<MessagesThreadProps> = ({ roomId, avatar, title, isOnline, lastMessage }) => {
     const { pathname } = useLocation();
     const navigate = useNavigate();
 
@@ -60,6 +64,11 @@ const MessagesThread: React.FC<MessagesThreadProps> = ({ roomId, avatar, title, 
         <div className={`messages-thread ${isActive ? 'active' : ''}`} onClick={handleClick}>
             <div className='messages-thread__avatar'>
                 <img src={avatar} alt={`${title}'s avatar`} />
+                {isOnline &&
+                    <div className='messages-thread__avatar--online'>
+                        <Badge status="success" text="" />
+                    </div>
+                }
             </div>
             <div className='messages-thread__details'>
                 <div className='messages-thread__details--name'>{title}</div>

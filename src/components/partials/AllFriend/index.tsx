@@ -30,9 +30,6 @@ const AllFriend: React.FC = () => {
                     {friends.map(item => (
                         <Friend key={item._id} user={item} />
                     ))}
-                    {friends.map(item => (
-                        <Friend key={item._id} user={item} />
-                    ))}
                 </div>
             ) : (
                 <div>Danh sách trống</div>

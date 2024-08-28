@@ -12,6 +12,7 @@
     }
 
     &__avatar {
+        position: relative;
         margin-right: 10px;
 
         img {
@@ -19,6 +20,17 @@
             aspect-ratio: 1/1;
             border-radius: 50%;
             overflow: hidden;
+        }
+
+        &--online {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+
+            .ant-badge-status-dot {
+                width: 10px !important; 
+                height: 10px !important;
+            }
         }
     }
 
