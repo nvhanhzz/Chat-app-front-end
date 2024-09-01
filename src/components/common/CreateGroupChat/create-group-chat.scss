@@ -1,0 +1,102 @@
+.create-group-chat {
+    position: absolute;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #e9d9d9;
+    }
+
+    .anticon-usergroup-add {
+        position: absolute;
+        right: -5px;
+        top: 5px;
+    }
+
+    &__modal {
+        &--header-option {
+            &--group-infor {
+            display: flex;
+            
+                &--avatar {
+                    width: 50px;
+                    border: 1px solid #ddd;
+                    border-radius: 50%;
+                    aspect-ratio: 1/1;
+                    font-size: 20px;
+                    color: #b6acac;
+                    cursor: pointer;
+                    margin-right: 10px;
+
+                    &.no-border {
+                        border: none;
+                    }
+
+                    &:hover {
+                        background-color: #f1ebeb;
+                    }
+
+                    label {
+                        width: 50px;
+                        height: 50px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+
+                    img {
+                        width: 100%;
+                        aspect-ratio: 1/1;
+                        border-radius: 50%;
+                        object-fit: cover;
+                        overflow: hidden;
+                        border: 0.5px solid #ddd;
+                    }
+                }
+
+                &--name {
+                    border: none;
+                    border-bottom: 1px solid #ddd;
+                    border-radius: 0px;
+                    height: 40px;
+                }
+            }
+
+            &--search {
+                height: 40px;
+                border-radius: 20px;
+            }
+        }
+
+        .ant-list-items {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .ant-avatar {
+            margin-left: 10px;
+            width: 45px;
+            height: 45px;
+        }
+    }
+}
+
+.ant-list-item-meta-content {
+    width: 300px !important;
+    margin-top: 11px;
+
+    h4 {
+        font-weight: 600;
+    }
+}
+
+.ant-list-item {
+    border-bottom: none !important;
+}
+
+.current-letter {
+    font-weight: 600;
+}

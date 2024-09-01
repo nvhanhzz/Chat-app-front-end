@@ -7,7 +7,8 @@ export interface User {
     coverImage: string,
     description: string,
     email: string,
-    phone: string
+    phone: string,
+    slug: string
 }
 
 export const setCurrentUser = (user: User | null) => ({

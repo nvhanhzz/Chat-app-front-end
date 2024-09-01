@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
+import CreateGroupChat from '../CreateGroupChat';
 import "./search-messages-thread.scss";
 
 interface SearchMessagesThreadProps {
@@ -21,6 +22,7 @@ const SearchMessagesThread: React.FC<SearchMessagesThreadProps> = ({ onKeywordCh
                 <SearchOutlined />
             </label>
             <input id='keySearch' type="text" placeholder='Tìm đoạn chat ...' value={keyword} onChange={handleChangeKeyword} />
+            <CreateGroupChat />
         </div>
     );
 }

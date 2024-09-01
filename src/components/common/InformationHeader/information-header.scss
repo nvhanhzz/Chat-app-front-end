@@ -32,7 +32,7 @@
         }
 
         &:hover {
-            background-color: #eef8f8;
+            background-color: transparent;
             cursor: pointer;
         }
     }
@@ -50,7 +50,8 @@
                 }
 
                 &:hover {
-                    background-color: #eef8f8;
+                    // background-color: #eef8f8;
+                    background-color: transparent;
                     cursor: pointer;
                 }
             }

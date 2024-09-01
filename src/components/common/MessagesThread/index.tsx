@@ -7,12 +7,13 @@ import { Badge } from 'antd';
 import './messages-thread.scss';
 
 export interface LastMessage {
-    content: string;
-    createAt: string;
-    userId: string;
+    content: string | null;
+    createAt: string | null;
+    userId: string | null;
 }
 
 export interface MessagesThreadProps {
+    _id?: string;
     roomId: string;
     avatar: string;
     type: 'one-to-one' | 'group';
@@ -20,6 +21,11 @@ export interface MessagesThreadProps {
     isOnline: boolean;
     lastOnline: Date;
     lastMessage: LastMessage;
+    members: {
+        _id: string;
+        fullName: string;
+        avatar: string;
+    }[];
 }
 
 const formatTimeAgoShort = (date: Date): string => {

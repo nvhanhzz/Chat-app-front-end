@@ -4,8 +4,8 @@ import { Button, Popover, Menu, Badge, Avatar } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import getSocket from '../../../utils/socket';
 import { getNotification, patchMarkNotificationAsRead } from '../../../services/NotificationService';
-import './notification-header.scss';
 import { User } from '../Friend';
+import './notification-header.scss';
 
 type TypeShowNtf = 'un_read' | 'all';
 
@@ -135,6 +135,26 @@ const NotificationHeader: React.FC = () => {
         navigate(notification.linkTo);
     }
 
+    const menuItems = displayedNotifications.length > 0
+        ? displayedNotifications.map((notification) => ({
+            key: notification._id,
+            label: (
+                <div className="notification-item" onClick={() => handleNotificationClick(notification)}>
+                    <Avatar src={notification.senderId.avatar} />
+                    <div className="notification-content">
+                        <strong>{notification.senderId.fullName} </strong>
+                        {getNotificationMessage(notification.type)}
+                    </div>
+                </div>
+            ),
+            className: notification.isRead ? 'read' : 'unread',
+        }))
+        : [{
+            key: '0',
+            label: 'Không có thông báo',
+            disabled: true,
+        }];
+
     const content = (
         <div className="notification-dropdown">
             <div className='notification-header__top'>
@@ -155,28 +175,7 @@ const NotificationHeader: React.FC = () => {
                     Tất cả
                 </button>
             </div>
-            <Menu className="notification-menu">
-                <Menu.Divider />
-                {displayedNotifications.length > 0 ? (
-                    displayedNotifications.map((notification) => (
-                        <Menu.Item
-                            key={notification._id}
-                            className={notification.isRead ? 'read' : 'unread'}
-                            onClick={() => handleNotificationClick(notification)}
-                        >
-                            <div className="notification-item">
-                                <Avatar src={notification.senderId.avatar} />
-                                <div className="notification-content">
-                                    <strong>{notification.senderId.fullName} </strong>
-                                    {getNotificationMessage(notification.type)}
-                                </div>
-                            </div>
-                        </Menu.Item>
-                    ))
-                ) : (
-                    <Menu.Item disabled>Không có thông báo</Menu.Item>
-                )}
-            </Menu>
+            <Menu className="notification-menu" items={menuItems} />
         </div>
     );
 

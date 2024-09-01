@@ -9,7 +9,9 @@ import { MessagesThreadProps } from '../../common/MessagesThread';
 const RoomChat: React.FC = () => {
     const { roomId } = useParams<{ roomId: string }>();
     const context = useOutletContext<{ messagesThreads: Array<MessagesThreadProps> }>();
-    const matchedRoom = context.messagesThreads.find(thread => thread.roomId === roomId);
+    const matchedRoom = context.messagesThreads.find(thread => {
+        return thread.roomId === roomId || (!thread.roomId && thread._id === roomId);
+    });
 
     if (!matchedRoom) {
         return <div>Room not found</div>;

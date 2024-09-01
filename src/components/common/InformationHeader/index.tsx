@@ -8,7 +8,6 @@ import {
     LogoutOutlined
 } from '@ant-design/icons';
 import { postLogout } from '../../../services/AuthService';
-import "./information-header.scss";
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addNotification } from '../../../redux/actions/notificationAction';
@@ -17,6 +16,7 @@ import { RootState } from '../../../redux/store';
 import { setCurrentUser, User } from '../../../redux/actions/currentUser';
 import getSocket from '../../../utils/socket';
 import { closeSocket } from '../../../redux/actions/socket';
+import "./information-header.scss";
 
 const InformationHeader: React.FC = () => {
     const dispatch = useDispatch();
@@ -51,7 +51,7 @@ const InformationHeader: React.FC = () => {
         {
             label:
                 <div className='dropdown-information'>
-                    <div className='dropdown-information__general'>
+                    <div className='dropdown-information__general' onClick={() => { navigate(`/profile/${currentUser.slug}`) }}>
                         <div className='dropdown-information__general--avatar'>
                             <img src={currentUser.avatar} alt={currentUser.fullName} />
                         </div>
